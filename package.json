@@ -1,0 +1,29 @@
+{
+  "name": "symatem",
+  "version": "0.0.0-semantic-release",
+  "authors": [
+    "Alexander Meißner",
+    "Markus Felten"
+  ],
+  "license": "MIT",
+  "description": "Symatem API",
+  "main": "api.js",
+  "module": "api.js",
+  "scripts": {
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "bugs": {
+    "url": "https://github.com/Lichtso/node-symatem/issues"
+  },
+  "homepage": "https://github.com/Lichtso/node-symatem.git#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lichtso/node-symatem.git"
+  },
+  "dependencies": {
+    "msgpack": "^1.0.2"
+  },
+  "devDependencies": {
+    "semantic-release": "6.3.1"
+  }
+}
