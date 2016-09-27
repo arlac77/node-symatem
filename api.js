@@ -11,33 +11,32 @@ const HOST = '::1',
   msgpackStream = new msgpack.Stream(socket),
   promiseQueue = [];
 
-msgpackStream.addListener('msg', function (data) {
+msgpackStream.addListener('msg', (data) => {
   promiseQueue.shift().resolve(data);
 });
 
-socket.on('error', function (error) {
+socket.on('error', error => {
   console.log('Error');
   socket.destroy();
 });
 
-socket.on('close', function () {
+socket.on('close', () => {
   console.log('Lost connection');
-  for (var i = 0; i < promiseQueue.length; ++i)
-    promiseQueue[i].reject();
+  promiseQueue.forEach(p => p.reject());
   promiseQueue.length = 0;
 });
 
-socket.connect(PORT, HOST, function () {
-  request('query', 9, 1, 2, 0).then(function (data) {
+socket.connect(PORT, HOST, () => {
+  request('query', 9, 1, 2, 0).then((data) => {
     console.log('Then', data);
-  }, function () {
+  }, () => {
     console.log('Then failed');
   });
 });
 
-const request = function () {
+const request = () => {
   const packet = msgpack.pack(Array.from(arguments));
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     promiseQueue.push({
       'resolve': resolve,
       'reject': reject
