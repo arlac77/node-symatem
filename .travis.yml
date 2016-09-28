@@ -1,0 +1,27 @@
+language: node_js
+node_js:
+  - 6.7
+sudo: false
+branches:
+  only:
+    - master
+    - /^greenkeeper-.*$/
+cache:
+  directories:
+    - node_modules
+notifications:
+  email:
+    - markus.felten@gmx.de
+before_install:
+  - npm i -g npm@latest
+before_script:
+  - npm prune
+  - curl -O http://mfelten.de/Symatem/SymatemAPI
+  - chmod +x SymatemAPI
+  - nohup SymatemAPI aFile &
+script:
+  - npm run-script cover
+after_script:
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+after_success:
+  - npm run semantic-release

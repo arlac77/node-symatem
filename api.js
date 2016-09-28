@@ -5,43 +5,51 @@
 const net = require('net'),
   msgpack = require('msgpack');
 
-const HOST = '::1',
-  PORT = 1337,
-  socket = new net.Socket(),
-  msgpackStream = new msgpack.Stream(socket),
-  promiseQueue = [];
+exports.open = function (host = '::1', port = 1337) {
+  const socket = new net.Socket(),
+    msgpackStream = new msgpack.Stream(socket),
+    promiseQueue = [];
 
-msgpackStream.addListener('msg', (data) => {
-  promiseQueue.shift().resolve(data);
-});
+  const connection = {
+    socket: socket,
+    request: (...args) => {
+      const packet = msgpack.pack(args);
+      return new Promise((resolve, reject) => {
+        promiseQueue.push({
+          resolve, reject
+        });
+        socket.write(packet);
+        console.log(packet);
+      });
+    }
+  };
 
-socket.on('error', error => {
-  console.log('Error');
-  socket.destroy();
-});
+  msgpackStream.addListener('msg', data => promiseQueue.shift().resolve(data));
 
-socket.on('close', () => {
-  console.log('Lost connection');
-  promiseQueue.forEach(p => p.reject());
-  promiseQueue.length = 0;
-});
-
-socket.connect(PORT, HOST, () => {
-  request('query', 9, 1, 2, 0).then((data) => {
-    console.log('Then', data);
-  }, () => {
-    console.log('Then failed');
+  socket.on('error', error => {
+    console.log('Error');
+    socket.destroy();
   });
-});
 
-const request = () => {
-  const packet = msgpack.pack(Array.from(arguments));
-  return new Promise((resolve, reject) => {
-    promiseQueue.push({
-      'resolve': resolve,
-      'reject': reject
+  socket.on('close', () => {
+    console.log('Lost connection');
+    promiseQueue.forEach(p => p.reject());
+    promiseQueue.length = 0;
+  });
+
+  return new Promise((f, r) => {
+    socket.connect(port, host, error => {
+      if (error) {
+        r(error);
+      } else {
+        f(connection);
+      }
     });
-    socket.write(packet);
-    console.log(packet);
   });
 };
+
+/*
+exports.open().then(connection => {
+  connection.request('query', 9, 1, 2, 0).then(data => console.log(data));
+});
+*/

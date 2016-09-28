@@ -10,6 +10,7 @@
   "main": "api.js",
   "module": "api.js",
   "scripts": {
+    "test": "node ./node_modules/.bin/mocha tests/*_test.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "bugs": {
@@ -24,6 +25,8 @@
     "msgpack": "^1.0.2"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.1.0",
     "semantic-release": "6.3.1"
   }
 }
