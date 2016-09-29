@@ -10,6 +10,7 @@ exports.open = function (host = '::1', port = 1337) {
     msgpackStream = new msgpack.Stream(socket),
     promiseQueue = [];
 
+
   const connection = {
     socket: socket,
     request: (...args) => {
@@ -23,6 +24,14 @@ exports.open = function (host = '::1', port = 1337) {
       });
     }
   };
+
+  ['createSymbol', 'releaseSymbol', 'getSize', 'setSize', 'decreaseSize', 'increaseSize', 'read', 'write', 'query',
+    'link', 'unlink'
+  ].forEach(
+    name => {
+      connection[name] = (...args) => connection.request(name, ...args);
+    });
+
 
   msgpackStream.addListener('msg', data => promiseQueue.shift().resolve(data));
 
