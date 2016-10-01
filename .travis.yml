@@ -19,7 +19,7 @@ before_script:
   - curl -O http://mfelten.de/Symatem/Symatem_$(uname -s)_$(uname -p).tar
   - tar xvf Symatem_$(uname -s)_$(uname -p).tar SymatemAPI
   - chmod +x SymatemAPI
-  - nohup SymatemAPI aFile &
+  - nohup ./SymatemAPI aFile &
 script:
   - npm run-script cover
 after_script:
