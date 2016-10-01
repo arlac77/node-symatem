@@ -17,7 +17,7 @@ before_install:
 before_script:
   - npm prune
   - curl -O http://mfelten.de/Symatem/Symatem_$(uname -s)_$(uname -p).tar
-  - tar xvf Symatem_$(uname -s)_$(uname -p).tar
+  - tar xvf Symatem_$(uname -s)_$(uname -p).tar SymatemAPI
   - chmod +x SymatemAPI
   - nohup SymatemAPI aFile &
 script:
