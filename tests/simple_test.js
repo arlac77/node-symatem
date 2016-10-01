@@ -15,13 +15,13 @@ describe('connection', () => {
 
   it('opens', () =>
     cp.then(connection =>
-      connection.query(9, 1, 2, 0).then(data => assert.deepEqual(data, [1219]))
+      connection.query(9, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
     )
   );
 
   it('query', () =>
     cp.then(connection =>
-      connection.query(9, 1, 2, 0).then(data => assert.deepEqual(data, [1219]))
+      connection.query(9, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
     )
   );
 });
