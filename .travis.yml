@@ -1,7 +1,16 @@
 language: node_js
+os:
+  - linux
+  - osx
 node_js:
   - 6.7
 sudo: false
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
 branches:
   only:
     - master
@@ -21,7 +30,7 @@ before_script:
   - chmod +x SymatemAPI
   - nohup ./SymatemAPI aFile &
 script:
-  - npm run-script cover
+  - npm run cover
 after_script:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 after_success:
