@@ -34,5 +34,6 @@ script:
 after_script:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 after_success:
+  - bash <(curl -s https://codecov.io/bash)
   - rm SymatemAPI
   - npm run semantic-release
