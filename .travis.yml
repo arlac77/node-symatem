@@ -26,11 +26,13 @@ before_script:
   - npm prune
   - curl -O http://mfelten.de/Symatem/Symatem_$(uname -s)_$(uname -p).tar
   - tar xvf Symatem_$(uname -s)_$(uname -p).tar SymatemAPI
+  - rm Symatem_$(uname -s)_$(uname -p).tar
   - chmod +x SymatemAPI
-  - nohup ./SymatemAPI aFile &
+  - nohup ./SymatemAPI tests/store &
 script:
   - npm run cover
 after_script:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 after_success:
+  - rm SymatemAPI
   - npm run semantic-release
