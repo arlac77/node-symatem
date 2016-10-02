@@ -28,12 +28,10 @@ before_script:
   - tar xvf Symatem_$(uname -s)_$(uname -p).tar SymatemAPI
   - rm Symatem_$(uname -s)_$(uname -p).tar
   - chmod +x SymatemAPI
-  - nohup ./SymatemAPI tests/store &
 script:
   - npm run cover
 after_script:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
   - rm SymatemAPI
   - npm run semantic-release
