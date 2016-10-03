@@ -19,7 +19,6 @@ exports.open = function (host = '::1', port = 1337) {
     promiseQueue = [];
 
   const connection = {
-    socket: socket,
     request: (...args) => {
       const packet = msgpack.pack(args);
       return new Promise((resolve, reject) => {
@@ -45,7 +44,6 @@ exports.open = function (host = '::1', port = 1337) {
           )
         );
       })
-
   };
 
   [
@@ -67,17 +65,17 @@ exports.open = function (host = '::1', port = 1337) {
   });
 
   socket.on('close', () => {
-    console.log('Lost connection');
     promiseQueue.forEach(p => p.reject());
     promiseQueue.length = 0;
+    socket.destroy();
   });
 
-  return new Promise((f, r) => {
+  return new Promise((fullfill, reject) => {
     socket.connect(port, host, error => {
       if (error) {
-        r(error);
+        reject(error);
       } else {
-        f(connection);
+        fullfill(connection);
       }
     });
   });

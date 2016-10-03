@@ -5,8 +5,8 @@
 [![codecov.io](http://codecov.io/github/arlac77/node-symatem/coverage.svg?branch=master)](http://codecov.io/github/arlac77/node-symatem?branch=master)
 [![Code Climate](https://codeclimate.com/github/arlac77/node-symatem/badges/gpa.svg)](https://codeclimate.com/github/arlac77/node-symatem)
 [![GitHub Issues](https://img.shields.io/github/issues/arlac77/node-symatem.svg?style=flat-square)](https://github.com/arlac77/node-symatem/issues)
-[![Dependency Status](https://david-dm.org/arlac77/symatem.svg)](https://david-dm.org/Kronos-Integration/symatem)
-[![devDependency Status](https://david-dm.org/arlac77/symatem/dev-status.svg)](https://david-dm.org/arlac77/symatem#info=devDependencies)
+[![Dependency Status](https://david-dm.org/arlac77/node-symatem.svg)](https://david-dm.org/arlac77/node-symatem)
+[![devDependency Status](https://david-dm.org/arlac77/node-symatem/dev-status.svg)](https://david-dm.org/arlac77/node-symatem#info=devDependencies)
 [![downloads](http://img.shields.io/npm/dm/symatem.svg?style=flat-square)](https://npmjs.org/package/symatem)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
