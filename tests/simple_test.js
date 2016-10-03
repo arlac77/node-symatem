@@ -14,6 +14,7 @@ const path = require('path'),
 
 let symatem;
 
+
 beforeEach('start SymatemAPI', done => {
   symatem = spawn(path.join(__dirname, '..', 'SymatemAPI'), [path.join(__dirname, 'test.sdb')]);
 
@@ -40,10 +41,9 @@ afterEach('stop SymatemAPI', done => {
   }
 });
 
-
 describe('connection', () => {
   describe('wrong connection', () => {
-    it('should fail', () =>
+    xit('should fail', () =>
       api.open('127.0.0.1', 12345)
       .catch(e => assert.equal(e.code, 'ECONNREFUSED'))
     );
@@ -64,11 +64,11 @@ describe('connection', () => {
   xit('upload', () =>
     api.open().then(connection =>
       connection.upload('(Entity; Attribute Value;)')
-      .then(() => connection.symbolNamed('Entity'))
-      .then(symbol => assert.deepEqual(symbol, 1))
+      //.then(() => connection.symbolNamed('Entity'))
+      //.then(symbol => assert.deepEqual(symbol, 1))
 
-      //      .then(symbol => connection.query(true, api.queryMask.MVI, symbol, 0, 0))
-      //      .then(result => assert.deepEqual(result, [1]))
+      .then(result => connection.query(false, api.queryMask.MVI, result.symbols[0], 0, 0))
+      .then(result => assert.deepEqual(result, [13, 28]))
     )
   );
 });

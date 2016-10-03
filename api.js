@@ -6,10 +6,42 @@ const net = require('net'),
   msgpack = require('msgpack');
 
 exports.queryMode = ['M', 'V', 'I'];
-exports.queryMask = {};
+
+exports.queryMask = {
+  /*
+  MMM: 0,
+  VMM: 1,
+  IMM: 2,
+  MVM: 3,
+  VVM: 4,
+  IVM: 5,
+  MIM: 6,
+  VIM: 7,
+  IIM: 8,
+  MMV: 9,
+  VMV: 10,
+  IMV: 11,
+  MVV: 12,
+  VVV: 13,
+  IVV: 14,
+  MIV: 15,
+  VIV: 16,
+  IIV: 17,
+  MMI: 18,
+  VMI: 19,
+  IMI: 20,
+  MVI: 21,
+  VVI: 22,
+  IVI: 23,
+  MII: 24,
+  VII: 25,
+  III: 26
+  */
+};
 
 for (let i = 0; i < 27; ++i) {
-  const key = exports.queryMode[i % 3] + exports.queryMode[(i / 3) % 3] + exports.queryMode[(i / 9) % 3];
+  const key = exports.queryMode[i % 3] + exports.queryMode[Math.floor(i / 3) % 3] + exports.queryMode[Math.floor(i / 9) %
+    3];
   exports.queryMask[key] = i;
 }
 
@@ -30,7 +62,7 @@ exports.open = function (host = '::1', port = 1337) {
           console.log('sending', packet);
         });
       },
-      symbolNamed: (name) => connection.request('deserializeBlob', `"${name}"`),
+      symbolNamed: (name) => connection.deserializeBlob(`"${name}"`),
       upload: (text) =>
         Promise.all([connection.createSymbol(), connection.createSymbol()]).then(args => {
           const [textSymbol, packageSymbol] = args;
@@ -38,9 +70,10 @@ exports.open = function (host = '::1', port = 1337) {
             connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
               connection.link(textSymbol, 28, 32).then(() =>
                 connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
-                  console.log(data);
                   connection.releaseSymbol(textSymbol);
-                  return packageSymbol;
+                  return {
+                    packageSymbol, symbols: data
+                  };
                 })
               )
             )
