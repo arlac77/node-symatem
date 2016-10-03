@@ -36,7 +36,7 @@ exports.open = function (host = '::1', port = 1337) {
   msgpackStream.addListener('msg', data => promiseQueue.shift().resolve(data));
 
   socket.on('error', error => {
-    console.log('Error');
+    console.log(`error: ${error}`);
     socket.destroy();
   });
 
