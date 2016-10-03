@@ -12,9 +12,9 @@ const path = require('path'),
   spawn = require('child_process').spawn,
   api = require('../api');
 
-describe('connection', () => {
+describe('connection', function() {
   let symatem;
-  before(() => {
+  before(function() {
     console.log('start SymatemAPI');
     symatem = spawn(path.join(__dirname, '..', 'SymatemAPI'), ['aFile']);
 
@@ -27,7 +27,7 @@ describe('connection', () => {
     symatem.on('error', (err) => console.log('Failed to start child process.'));
   });
 
-  after(() => {
+  after(function() {
     if (symatem) {
       symatem.kill();
       symatem = undefined;
