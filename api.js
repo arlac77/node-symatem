@@ -10,7 +10,6 @@ exports.open = function (host = '::1', port = 1337) {
     msgpackStream = new msgpack.Stream(socket),
     promiseQueue = [];
 
-
   const connection = {
     socket: socket,
     request: (...args) => {
@@ -20,19 +19,21 @@ exports.open = function (host = '::1', port = 1337) {
           resolve, reject
         });
         socket.write(packet);
-        console.log(packet);
+        console.log('sending', packet);
       });
     }
   };
 
-  ['createSymbol', 'releaseSymbol', 'getSize', 'setSize', 'decreaseSize', 'increaseSize', 'read', 'write', 'query',
-    'link', 'unlink'
+  [
+    'createSymbol', 'releaseSymbol',
+    'getBlobSize', 'setBlobSize', 'decreaseBlobSize', 'increaseBlobSize', 'readBlob', 'writeBlob', 'deserializeBlob',
+    'query', 'link', 'unlink'
   ].forEach(
     name => {
       connection[name] = (...args) => connection.request(name, ...args);
     });
 
-
+  socket.on('data', data => console.log('received', data));
   msgpackStream.addListener('msg', data => promiseQueue.shift().resolve(data));
 
   socket.on('error', error => {
@@ -56,9 +57,3 @@ exports.open = function (host = '::1', port = 1337) {
     });
   });
 };
-
-/*
-exports.open().then(connection => {
-  connection.request('query', 9, 1, 2, 0).then(data => console.log(data));
-});
-*/
