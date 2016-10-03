@@ -64,8 +64,11 @@ describe('connection', () => {
   xit('upload', () =>
     api.open().then(connection =>
       connection.upload('(Entity; Attribute Value;)')
-      .then(symbol => connection.query(true, api.queryMask.MVI, symbol, 0, 0))
-      .then(result => assert.deepEqual(result, [1]))
+      .then(() => connection.symbolNamed('Entity'))
+      .then(symbol => assert.deepEqual(symbol, 1))
+
+      //      .then(symbol => connection.query(true, api.queryMask.MVI, symbol, 0, 0))
+      //      .then(result => assert.deepEqual(result, [1]))
     )
   );
 });

@@ -30,6 +30,7 @@ exports.open = function (host = '::1', port = 1337) {
           console.log('sending', packet);
         });
       },
+      symbolNamed: (name) => connection.request('deserializeBlob', `"${name}"`),
       upload: (text) =>
         Promise.all([connection.createSymbol(), connection.createSymbol()]).then(args => {
           const [textSymbol, packageSymbol] = args;
