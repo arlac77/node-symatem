@@ -15,6 +15,7 @@ const path = require('path'),
 describe('connection', () => {
   let symatem;
   before(() => {
+    console.log('start SymatemAPI');
     symatem = spawn(path.join(__dirname, '..', 'SymatemAPI'), ['aFile']);
 
     symatem.stdout.on('data', (data) => console.log(`stdout: ${data}`));
