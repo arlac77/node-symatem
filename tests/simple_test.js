@@ -38,13 +38,13 @@ describe('connection', function() {
 
   it('opens', () =>
     cp.then(connection =>
-      connection.query(9, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
+      connection.query(false, 9, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
     )
   );
 
   xit('query', () =>
     cp.then(connection =>
-      connection.query(9, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
+      connection.query(false, 9, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
     )
   );
 });
