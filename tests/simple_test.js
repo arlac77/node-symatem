@@ -37,7 +37,7 @@ describe('connection', () => {
     )
   );
 
-  it('upload', () =>
+  xit('upload', () =>
     api.open().then(connection =>
       connection.upload('(Entity; Attribute Value;)')
       //.then(() => connection.symbolNamed('Entity'))
@@ -45,6 +45,20 @@ describe('connection', () => {
 
       .then(result => connection.query(false, api.queryMask.MVI, result.symbols[0], 0, 0))
       .then(result => assert.deepEqual(result, [13, 28]))
+    )
+  );
+
+  it('upload with syntax error', () =>
+    api.open().then(connection =>
+      connection.upload('(Entity; ]')
+      .catch(result => assert.deepEqual(result, {
+        error: [
+          [700],
+          [660],
+          [671]
+        ],
+        packageSymbol: 611
+      }))
     )
   );
 
@@ -71,7 +85,6 @@ describe('connection', () => {
 
       symatem.kill();
       done();
-
     } else {
       done();
     }

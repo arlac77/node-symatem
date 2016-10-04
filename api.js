@@ -7,7 +7,7 @@ const net = require('net'),
 
 exports.queryMode = ['M', 'V', 'I'];
 
-exports.queryMask = {
+const queryMask = {
   /*
   MMM: 0,
   VMM: 1,
@@ -39,10 +39,12 @@ exports.queryMask = {
   */
 };
 
+exports.queryMask = queryMask;
+
 for (let i = 0; i < 27; ++i) {
   const key = exports.queryMode[i % 3] + exports.queryMode[Math.floor(i / 3) % 3] + exports.queryMode[Math.floor(i / 9) %
     3];
-  exports.queryMask[key] = i;
+  queryMask[key] = i;
 }
 
 exports.open = function (host = '::1', port = 1337) {
@@ -71,9 +73,22 @@ exports.open = function (host = '::1', port = 1337) {
               connection.link(textSymbol, 28, 32).then(() =>
                 connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
                   connection.releaseSymbol(textSymbol);
-                  return {
-                    packageSymbol, symbols: data
-                  };
+                  if (Array.isArray(data)) {
+                    return {
+                      packageSymbol, symbols: data
+                    };
+                  } else {
+                    return connection.query(false, queryMask.MVI, data, 0, 0).then(errors =>
+                      Promise.all(errors.map(e => connection.query(false, queryMask.MMV, data,
+                        e,
+                        0))).then(
+                        errors =>
+                        Promise.reject({
+                          packageSymbol, error: errors
+                        })
+                      )
+                    );
+                  }
                 })
               )
             )
