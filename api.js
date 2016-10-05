@@ -7,6 +7,19 @@ const net = require('net'),
 
 exports.queryMode = ['M', 'V', 'I'];
 
+const WellKnownSymbols = [
+  'Void', 'RunTimeEnvironment', 'ArchitectureSize',
+  'Package', 'Holds', 'Input', 'Output', 'Target',
+  'Destination', 'Source', 'Count', 'Direction',
+  'Entity', 'Attribute', 'Value', 'Search', 'Varying',
+  'Link', 'Unlink', 'Create', 'Destroy', 'Serialize',
+  'Deserialize', 'UnnestEntity', 'UnnestAttribute',
+  'Message', 'Row', 'Column', 'BlobType', 'Natural',
+  'Integer', 'Float', 'UTF8', 'CloneBlob', 'SliceBlob',
+  'GetBlobSize', 'DecreaseBlobSize', 'IncreaseBlobSize',
+  'At'
+];
+
 const queryMask = {
   /*
   MMM: 0,
@@ -78,16 +91,22 @@ exports.open = function (host = '::1', port = 1337) {
                       packageSymbol, symbols: data
                     };
                   } else {
-                    return connection.query(false, queryMask.MVI, data, 0, 0).then(errors =>
-                      Promise.all(errors.map(e => connection.query(false, queryMask.MMV, data,
-                        e,
-                        0))).then(
-                        errors =>
-                        Promise.reject({
-                          packageSymbol, error: errors
-                        })
-                      )
-                    );
+                    return connection.query(false, queryMask.MVV, data, 0, 0).then(avs => {
+                      const values = [];
+                      for (let i = 0; i < avs.length; i += 2) {
+                        values.push(connection.readBlob(avs[i + 1], 0, 64));
+                      }
+
+                      return Promise.all(values).then(values => {
+                        const error = {};
+
+                        values.forEach((v, i) => error[WellKnownSymbols[avs[i * 2]]] = v);
+                        console.log(error);
+                        return Promise.reject({
+                          packageSymbol, error: error
+                        });
+                      });
+                    });
                   }
                 })
               )

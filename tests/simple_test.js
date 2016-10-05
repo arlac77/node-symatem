@@ -52,11 +52,11 @@ describe('connection', () => {
     api.open().then(connection =>
       connection.upload('(Entity; ]')
       .catch(result => assert.deepEqual(result, {
-        error: [
-          [700],
-          [660],
-          [671]
-        ],
+        error: {
+          Column: 105,
+          Row: 77,
+          Message: new Buffer('') //""
+        },
         packageSymbol: 611
       }))
     )
