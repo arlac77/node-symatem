@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+/* jslint node: true, esnext: true */
+
+'use strict';
+
+const api = require('./api'),
+fs = require('fs');
+
+api.open().then(connection =>
+  connection.upload(fs.readFileSync('../de.mfelten.infrastructure/assets.sym'))
+  .then(result => {
+  return connection.upload("ipv4Address").then(result => {
+    //console.log(`ipv4AddressSymbol: ${result}`);
+    connection.query(false,api.queryMask.VMV,0,result.symbols[0],0).then(ipas => {
+      connection.readBlob(ipas[1]).then(b => {
+        console.log(b.toString());
+      });
+      //console.log(`ipv4Address: ${ipas}`);
+    });
+  });
+
+  //Promise.all(result.symbols.map(s => connection.decodeSymbol(s))).then(symbols => console.log(symbols));
+ })
+  .catch(result => console.error(result)));
