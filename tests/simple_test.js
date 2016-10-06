@@ -64,7 +64,7 @@ describe('connection', () => {
 
   beforeEach('start SymatemAPI', done => {
     const store = path.join(__dirname, 'test.sdb');
-    fs.unlink(store, (error) => {
+    fs.unlink(store, error => {
       symatem = spawn(path.join(__dirname, '..', 'SymatemAPI'), [store]);
 
       symatem.stdout.on('data', data => console.log(`stdout: ${data}`));

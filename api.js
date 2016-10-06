@@ -79,10 +79,38 @@ exports.open = function (host = '::1', port = 1337) {
             resolve, reject
           });
           socket.write(packet);
-          console.log('sending', packet);
+          //console.log('sending', packet);
         });
       },
       symbolNamed: (name) => connection.deserializeBlob(`"${name}"`),
+      decodeSymbol: (s) => {
+        return connection.query(false, queryMask.MVV, s, 0, 0).then(avs => {
+          const valuesAndTypes = [];
+          for (let i = 0; i < avs.length; i += 2) {
+            const value = avs[i + 1];
+            valuesAndTypes.push(connection.readBlob(value));
+            valuesAndTypes.push(connection.query(false, queryMask.MMV, value, symbol.BlobType, 0));
+          }
+
+          return Promise.all(valuesAndTypes).then(valuesAndTypes => {
+            const object = {};
+
+            for (let i = 0; i < valuesAndTypes.length; i += 2) {
+              let v = valuesAndTypes[i];
+              const type = valuesAndTypes[i + 1];
+
+              if (type == symbol.UTF8) {
+                v = v.toString();
+              } else if (type == symbol.Natural) {
+                v = v.readInt32LE(0);
+              }
+              object[WellKnownSymbols[avs[i]]] = v;
+            }
+            return object;
+          });
+        });
+      },
+
       upload: (text) =>
         Promise.all([connection.createSymbol(), connection.createSymbol()]).then(args => {
           const [textSymbol, packageSymbol] = args;
@@ -96,34 +124,11 @@ exports.open = function (host = '::1', port = 1337) {
                       packageSymbol, symbols: data
                     };
                   } else {
-                    return connection.query(false, queryMask.MVV, data, 0, 0).then(avs => {
-                      const values = [];
-                      const types = [];
-                      for (let i = 0; i < avs.length; i += 2) {
-                        const value = avs[i + 1];
-                        types.push(connection.query(false, queryMask.MMV, value, symbol.BlobType, 0));
-                        values.push(connection.readBlob(value));
-                      }
-
-                      return Promise.all(values).then(values =>
-                        Promise.all(types).then(types => {
-                          const error = {};
-
-                          values.forEach((v, i) => {
-                            const type = types[i];
-
-                            if (type == symbol.UTF8) {
-                              v = v.toString();
-                            } else if (type == symbol.Natural) {
-                              v = v.readInt32LE(0);
-                            }
-                            error[WellKnownSymbols[avs[i * 2]]] = v;
-                          });
-                          return Promise.reject({
-                            packageSymbol, error: error
-                          });
-                        }));
-                    });
+                    return connection.decodeSymbol(data).then(object =>
+                      Promise.reject({
+                        packageSymbol, error: object
+                      })
+                    );
                   }
                 }))
             )
@@ -141,7 +146,7 @@ exports.open = function (host = '::1', port = 1337) {
         connection[name] = (...args) => connection.request(name, ...args);
       });
 
-    socket.on('data', data => console.log('received', data));
+    //socket.on('data', data => console.log('received', data));
     msgpackStream.addListener('msg', data => promiseQueue.shift().resolve(data));
 
     socket.on('error', error => {
