@@ -20,6 +20,9 @@ const WellKnownSymbols = [
   'At'
 ];
 
+const symbols = {};
+WellKnownSymbols.forEach((s,i)=>{ symbols[s] = i; });
+
 const queryMask = {
   /*
   MMM: 0,
@@ -93,10 +96,14 @@ exports.open = function (host = '::1', port = 1337) {
                   } else {
                     return connection.query(false, queryMask.MVV, data, 0, 0).then(avs => {
                       const values = [];
+                      const types = [];
                       for (let i = 0; i < avs.length; i += 2) {
+                        values.push(connection.query(false,queryMask.MMV,avs[i + 1], symbol.BlockType, 0));
                         values.push(connection.readBlob(avs[i + 1], 0, 64));
                       }
-
+                      
+					  Promise.all(types).then(types => console.log(`types: ${types}`));
+					  
                       return Promise.all(values).then(values => {
                         const error = {};
 
