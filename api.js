@@ -20,8 +20,10 @@ const WellKnownSymbols = [
   'At'
 ];
 
-const symbols = {};
-WellKnownSymbols.forEach((s,i)=>{ symbols[s] = i; });
+const symbol = {};
+WellKnownSymbols.forEach((s, i) => {
+  symbol[s] = i;
+});
 
 const queryMask = {
   /*
@@ -98,25 +100,32 @@ exports.open = function (host = '::1', port = 1337) {
                       const values = [];
                       const types = [];
                       for (let i = 0; i < avs.length; i += 2) {
-                        values.push(connection.query(false,queryMask.MMV,avs[i + 1], symbol.BlockType, 0));
-                        values.push(connection.readBlob(avs[i + 1], 0, 64));
+                        const value = avs[i + 1];
+                        types.push(connection.query(false, queryMask.MMV, value, symbol.BlobType, 0));
+                        values.push(connection.readBlob(value));
                       }
-                      
-					  Promise.all(types).then(types => console.log(`types: ${types}`));
-					  
-                      return Promise.all(values).then(values => {
-                        const error = {};
 
-                        values.forEach((v, i) => error[WellKnownSymbols[avs[i * 2]]] = v);
-                        console.log(error);
-                        return Promise.reject({
-                          packageSymbol, error: error
-                        });
-                      });
+                      return Promise.all(values).then(values =>
+                        Promise.all(types).then(types => {
+                          const error = {};
+
+                          values.forEach((v, i) => {
+                            const type = types[i];
+
+                            if (type == symbol.UTF8) {
+                              v = v.toString();
+                            } else if (type == symbol.Natural) {
+                              v = v.readInt32LE(0);
+                            }
+                            error[WellKnownSymbols[avs[i * 2]]] = v;
+                          });
+                          return Promise.reject({
+                            packageSymbol, error: error
+                          });
+                        }));
                     });
                   }
-                })
-              )
+                }))
             )
           );
         })

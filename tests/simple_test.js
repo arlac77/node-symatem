@@ -53,9 +53,9 @@ describe('connection', () => {
       connection.upload('(Entity; ]')
       .catch(result => assert.deepEqual(result, {
         error: {
-          Column: 105,
-          Row: 77,
-          Message: new Buffer('') //""
+          Column: 11,
+          Row: 1,
+          Message: 'Missing closing bracket'
         },
         packageSymbol: 611
       }))
