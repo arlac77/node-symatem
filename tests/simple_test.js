@@ -49,6 +49,14 @@ describe('connection', () => {
   it('upload', () =>
     cp.then(connection =>
       connection.upload('(Entity; Attribute Value;)')
+      .then(result => connection.query(false, api.queryMask.MVI, result[0], 0, 0))
+      .then(result => assert.deepEqual(result, [13, 28]))
+    )
+  );
+
+  it('upload with package', () =>
+    cp.then(connection =>
+      connection.upload('(Entity; Attribute Value;)', true)
       .then(result => connection.query(false, api.queryMask.MVI, result.symbols[0], 0, 0))
       .then(result => assert.deepEqual(result, [13, 28]))
     )

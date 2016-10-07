@@ -119,29 +119,39 @@ exports.open = function (host = '::1', port = 1337) {
         });
       },
 
-      upload: (text) => {
-        return Promise.all([connection.createSymbol(), connection.createSymbol()]).then(args => {
-          const [textSymbol, packageSymbol] = args;
-          return connection.setBlobSize(textSymbol, text.length * 8).then(() =>
-            connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
-              connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
-                connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
-                  connection.releaseSymbol(textSymbol);
-                  if (Array.isArray(data)) {
-                    return {
+      upload: (text, createPackage = false) => {
+        if (createPackage) {
+          return Promise.all([connection.createSymbol(), connection.createSymbol()]).then(args => {
+            const [textSymbol, packageSymbol] = args;
+            return connection.setBlobSize(textSymbol, text.length * 8).then(() =>
+              connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
+                connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
+                  connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
+                    connection.releaseSymbol(textSymbol);
+                    return Array.isArray(data) ? {
                       packageSymbol, symbols: data
-                    };
-                  } else {
-                    return connection.decodeSymbol(data).then(object =>
+                    } : connection.decodeSymbol(data).then(object =>
                       Promise.reject({
                         packageSymbol, error: object
                       })
                     );
-                  }
-                }))
-            )
-          );
-        });
+                  }))
+              )
+            );
+          });
+        } else {
+          return connection.createSymbol().then(textSymbol => {
+            return connection.setBlobSize(textSymbol, text.length * 8).then(() =>
+              connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
+                connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
+                  connection.deserializeBlob(textSymbol /*, packageSymbol*/ ).then(data => {
+                    connection.releaseSymbol(textSymbol);
+                    return Array.isArray(data) ? data : connection.decodeSymbol(data);
+                  }))
+              )
+            );
+          });
+        }
       }
     };
 
