@@ -81,7 +81,7 @@ exports.open = function (host = '::1', port = 1337) {
             resolve, reject
           });
           socket.write(packet);
-          console.log('sending', packet);
+          //console.log('sending', packet);
         });
       },
       symbolNamed: (name) => connection.deserializeBlob(`"${name}"`),
@@ -107,7 +107,12 @@ exports.open = function (host = '::1', port = 1337) {
               } else if (type == PredefinedSymbols.Natural) {
                 v = v.readInt32LE(0);
               }
-              object[PredefinedSymbolLookup[avs[i]]] = v;
+              let propertyName = PredefinedSymbolLookup[avs[i]];
+              if (propertyName === undefined) {
+                console.log(`${avs[i]} ${type}`);
+                propertyName = `symbol_${avs[i]}`;
+              }
+              object[propertyName] = v;
             }
             return object;
           });
@@ -150,7 +155,7 @@ exports.open = function (host = '::1', port = 1337) {
         connection[name] = (...args) => connection.request(name, ...args);
       });
 
-    socket.on('data', data => console.log('received', data));
+    //socket.on('data', data => console.log('received', data));
     msgpackStream.addListener('msg', data => promiseQueue.shift().resolve(data));
 
     socket.on('error', error => {

@@ -14,7 +14,7 @@ const path = require('path'),
   api = require('../api');
 
 let symatem;
-
+let cp;
 
 
 describe('connection problems', () => {
@@ -25,31 +25,15 @@ describe('connection problems', () => {
 });
 
 describe('connection', () => {
-  xit('opens', () =>
-    api.open().then(connection =>
+
+  it('query', () =>
+    cp.then(connection =>
       connection.query(false, api.queryMask.MMV, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
-    )
-  );
-
-  xit('query', () =>
-    api.open().then(connection =>
-      connection.query(false, api.queryMask.MMV, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
-    )
-  );
-
-  xit('upload', () =>
-    api.open().then(connection =>
-      connection.upload('(Entity; Attribute Value;)')
-      //.then(() => connection.symbolNamed('Entity'))
-      //.then(symbol => assert.deepEqual(symbol, 1))
-
-      .then(result => connection.query(false, api.queryMask.MVI, result.symbols[0], 0, 0))
-      .then(result => assert.deepEqual(result, [13, 28]))
     )
   );
 
   it('upload with syntax error', () =>
-    api.open().then(connection =>
+    cp.then(connection =>
       connection.upload('(Entity; ]')
       .catch(result => assert.deepEqual(result, {
         error: {
@@ -57,12 +41,20 @@ describe('connection', () => {
           Row: 1,
           Message: 'Missing closing bracket'
         },
-        packageSymbol: 611
+        packageSymbol: 612
       }))
     )
   );
 
-  beforeEach('start SymatemAPI', done => {
+  it('upload', () =>
+    cp.then(connection =>
+      connection.upload('(Entity; Attribute Value;)')
+      .then(result => connection.query(false, api.queryMask.MVI, result.symbols[0], 0, 0))
+      .then(result => assert.deepEqual(result, [13, 28]))
+    )
+  );
+
+  before('start SymatemAPI', done => {
     const store = path.join(__dirname, 'test.sdb');
     fs.unlink(store, error => {
       symatem = spawn(path.join(__dirname, '..', 'SymatemAPI'), [store]);
@@ -71,11 +63,14 @@ describe('connection', () => {
       symatem.stderr.on('data', data => console.log(`stderr: ${data}`));
       symatem.on('error', err => console.log(`Failed to start child process. ${err}`));
 
-      setTimeout(() => done(), 300);
+      setTimeout(() => {
+        cp = api.open();
+        done();
+      }, 300);
     });
   });
 
-  afterEach('stop SymatemAPI', done => {
+  after('stop SymatemAPI', done => {
     if (symatem) {
       symatem.on('close', code => {
         symatem = undefined;
