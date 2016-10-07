@@ -7,7 +7,7 @@ const net = require('net'),
 
 exports.queryMode = ['M', 'V', 'I'];
 
-const WellKnownSymbols = [
+const PredefinedSymbolLookup = [
   'Void', 'RunTimeEnvironment', 'ArchitectureSize',
   'Package', 'Holds', 'Input', 'Output', 'Target',
   'Destination', 'Source', 'Count', 'Direction',
@@ -20,10 +20,12 @@ const WellKnownSymbols = [
   'At'
 ];
 
-const symbol = {};
-WellKnownSymbols.forEach((s, i) => {
-  symbol[s] = i;
+const PredefinedSymbols = {};
+PredefinedSymbolLookup.forEach((s, i) => {
+  PredefinedSymbols[s] = i;
 });
+
+exports.PredefinedSymbols = PredefinedSymbols;
 
 const queryMask = {
   /*
@@ -79,7 +81,7 @@ exports.open = function (host = '::1', port = 1337) {
             resolve, reject
           });
           socket.write(packet);
-          //console.log('sending', packet);
+          console.log('sending', packet);
         });
       },
       symbolNamed: (name) => connection.deserializeBlob(`"${name}"`),
@@ -89,7 +91,8 @@ exports.open = function (host = '::1', port = 1337) {
           for (let i = 0; i < avs.length; i += 2) {
             const value = avs[i + 1];
             valuesAndTypes.push(connection.readBlob(value));
-            valuesAndTypes.push(connection.query(false, queryMask.MMV, value, symbol.BlobType, 0));
+            valuesAndTypes.push(connection.query(false, queryMask.MMV, value, PredefinedSymbols.BlobType,
+              0));
           }
 
           return Promise.all(valuesAndTypes).then(valuesAndTypes => {
@@ -99,24 +102,24 @@ exports.open = function (host = '::1', port = 1337) {
               let v = valuesAndTypes[i];
               const type = valuesAndTypes[i + 1];
 
-              if (type == symbol.UTF8) {
+              if (type == PredefinedSymbols.UTF8) {
                 v = v.toString();
-              } else if (type == symbol.Natural) {
+              } else if (type == PredefinedSymbols.Natural) {
                 v = v.readInt32LE(0);
               }
-              object[WellKnownSymbols[avs[i]]] = v;
+              object[PredefinedSymbolLookup[avs[i]]] = v;
             }
             return object;
           });
         });
       },
 
-      upload: (text) =>
-        Promise.all([connection.createSymbol(), connection.createSymbol()]).then(args => {
+      upload: (text) => {
+        return Promise.all([connection.createSymbol(), connection.createSymbol()]).then(args => {
           const [textSymbol, packageSymbol] = args;
           return connection.setBlobSize(textSymbol, text.length * 8).then(() =>
             connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
-              connection.link(textSymbol, 28, 32).then(() =>
+              connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
                 connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
                   connection.releaseSymbol(textSymbol);
                   if (Array.isArray(data)) {
@@ -133,7 +136,8 @@ exports.open = function (host = '::1', port = 1337) {
                 }))
             )
           );
-        })
+        });
+      }
     };
 
     [
@@ -146,7 +150,7 @@ exports.open = function (host = '::1', port = 1337) {
         connection[name] = (...args) => connection.request(name, ...args);
       });
 
-    //socket.on('data', data => console.log('received', data));
+    socket.on('data', data => console.log('received', data));
     msgpackStream.addListener('msg', data => promiseQueue.shift().resolve(data));
 
     socket.on('error', error => {

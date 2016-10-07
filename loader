@@ -9,9 +9,14 @@ fs = require('fs');
 api.open().then(connection =>
   connection.upload(fs.readFileSync('../de.mfelten.infrastructure/assets.sym'))
   .then(result => {
-  return connection.upload("ipv4Address").then(result => {
+  return connection.upload('ipv4Address').then(result => {
     //console.log(`ipv4AddressSymbol: ${result}`);
     connection.query(false,api.queryMask.VMV,0,result.symbols[0],0).then(ipas => {
+
+      connection.getBlobSize(ipas[1]).then(size => {
+        console.log(`size: ${size}`);
+      });
+
       connection.readBlob(ipas[1]).then(b => {
         console.log(b.toString());
       });
