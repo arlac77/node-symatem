@@ -32,35 +32,27 @@ describe('connection', () => {
     )
   );
 
-  it('upload with syntax error', () =>
-    cp.then(connection =>
-      connection.upload('(Entity; ]')
-      .catch(result => assert.deepEqual(result, {
-        error: {
-          Column: 11,
-          Row: 1,
-          Message: 'Missing closing bracket'
-        },
-        packageSymbol: 612
-      }))
-    )
-  );
-
-  it('upload', () =>
-    cp.then(connection =>
-      connection.upload('(Entity; Attribute Value;)')
-      .then(result => connection.query(false, api.queryMask.MVI, result[0], 0, 0))
-      .then(result => assert.deepEqual(result, [13, 28]))
-    )
-  );
-
-  it('upload with package', () =>
-    cp.then(connection =>
-      connection.upload('(Entity; Attribute Value;)', true)
-      .then(result => connection.query(false, api.queryMask.MVI, result.symbols[0], 0, 0))
-      .then(result => assert.deepEqual(result, [13, 28]))
-    )
-  );
+  describe('upload', () => {
+    describe('without package', () => {
+      it('syntax error', () =>
+        cp.then(connection =>
+          connection.upload('(Entity; ]')
+          .catch(result => assert.deepEqual(result, {
+            Column: 11,
+            Row: 1,
+            Message: 'Missing closing bracket'
+          }))
+        )
+      );
+      it('valid', () =>
+        cp.then(connection =>
+          connection.upload('(Entity; Attribute Value;)')
+          .then(result => connection.query(false, api.queryMask.MVI, result[0], 0, 0))
+          .then(result => assert.deepEqual(result, [13, 28]))
+        )
+      );
+    });
+  });
 
   before('start SymatemAPI', done => {
     const store = path.join(__dirname, 'test.sdb');

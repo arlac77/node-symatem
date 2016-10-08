@@ -106,11 +106,10 @@ exports.open = function (host = '::1', port = 1337) {
                 v = v.toString();
               } else if (type == PredefinedSymbols.Natural) {
                 v = v.readInt32LE(0);
-              }
-              else {
+              } else {
                 console.log(`unknown type ${type}`);
               }
-              
+
               let propertyName = PredefinedSymbolLookup[avs[i]];
               if (propertyName === undefined) {
                 console.log(`${avs[i]} ${type}`);
@@ -123,39 +122,20 @@ exports.open = function (host = '::1', port = 1337) {
         });
       },
 
-      upload: (text, createPackage = false) => {
-        if (createPackage) {
-          return Promise.all([connection.createSymbol(), connection.createSymbol()]).then(args => {
-            const [textSymbol, packageSymbol] = args;
-            return connection.setBlobSize(textSymbol, text.length * 8).then(() =>
-              connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
-                connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
-                  connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
-                    connection.releaseSymbol(textSymbol);
-                    return Array.isArray(data) ? {
-                      packageSymbol, symbols: data
-                    } : connection.decodeSymbol(data).then(object =>
-                      Promise.reject({
-                        packageSymbol, error: object
-                      })
-                    );
-                  }))
-              )
-            );
-          });
-        } else {
-          return connection.createSymbol().then(textSymbol => {
-            return connection.setBlobSize(textSymbol, text.length * 8).then(() =>
-              connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
-                connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
-                  connection.deserializeBlob(textSymbol).then(data => {
-                    connection.releaseSymbol(textSymbol);
-                    return Array.isArray(data) ? data : connection.decodeSymbol(data); // TODO reject ?
-                  }))
-              )
-            );
-          });
-        }
+      upload: (text, packageSymbol = PredefinedSymbols.Void) => {
+        return connection.createSymbol().then(textSymbol =>
+          connection.setBlobSize(textSymbol, text.length * 8).then(() =>
+            connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
+              connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
+                connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
+                  connection.releaseSymbol(textSymbol);
+                  return Array.isArray(data) ? data : connection.decodeSymbol(data).then(r =>
+                    Promise.reject(r)
+                  );
+                }))
+            )
+          )
+        );
       }
     };
 
