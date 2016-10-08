@@ -107,6 +107,10 @@ exports.open = function (host = '::1', port = 1337) {
               } else if (type == PredefinedSymbols.Natural) {
                 v = v.readInt32LE(0);
               }
+              else {
+                console.log(`unknown type ${type}`);
+              }
+              
               let propertyName = PredefinedSymbolLookup[avs[i]];
               if (propertyName === undefined) {
                 console.log(`${avs[i]} ${type}`);
@@ -144,9 +148,9 @@ exports.open = function (host = '::1', port = 1337) {
             return connection.setBlobSize(textSymbol, text.length * 8).then(() =>
               connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
                 connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
-                  connection.deserializeBlob(textSymbol /*, packageSymbol*/ ).then(data => {
+                  connection.deserializeBlob(textSymbol).then(data => {
                     connection.releaseSymbol(textSymbol);
-                    return Array.isArray(data) ? data : connection.decodeSymbol(data);
+                    return Array.isArray(data) ? data : connection.decodeSymbol(data); // TODO reject ?
                   }))
               )
             );
