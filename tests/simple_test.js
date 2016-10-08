@@ -55,6 +55,8 @@ describe('connection', () => {
 
     it('query', () =>
       cp.then(connection =>
+      	connection.upload('(Entity; Attribute Value;)').
+      	then(() =>
         connection.upload('Entity').then(result => {
           /*return connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
             data, {
@@ -64,7 +66,7 @@ describe('connection', () => {
           return connection.query(false, api.queryMask.MVV, result[0], 2, 0).then(data => assert.deepEqual(
             data, [28, 32]));
         })
-      )
+      ))
     );
 
   });
