@@ -85,6 +85,7 @@ exports.open = function (host = '::1', port = 1337) {
         });
       },
       symbolNamed: (name) => connection.deserializeBlob(`"${name}"`),
+
       decodeSymbol: (s) => {
         return connection.query(false, queryMask.MVV, s, 0, 0).then(avs => {
           const valuesAndTypes = [];
@@ -107,7 +108,7 @@ exports.open = function (host = '::1', port = 1337) {
               } else if (type == PredefinedSymbols.Natural) {
                 v = v.readInt32LE(0);
               } else {
-                console.log(`unknown type ${type}`);
+                console.log(`unknown type ${type} ${typeof type}`);
               }
 
               let propertyName = PredefinedSymbolLookup[avs[i]];
@@ -123,9 +124,10 @@ exports.open = function (host = '::1', port = 1337) {
       },
 
       upload: (text, packageSymbol = PredefinedSymbols.Void) => {
+        const buffer = Buffer.from(text);
         return connection.createSymbol().then(textSymbol =>
-          connection.setBlobSize(textSymbol, text.length * 8).then(() =>
-            connection.writeBlob(textSymbol, 0, text.length * 8, Buffer.from(text)).then(() =>
+          connection.setBlobSize(textSymbol, buffer.length * 8).then(() =>
+            connection.writeBlob(textSymbol, 0, buffer.length * 8, buffer).then(() =>
               connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
                 connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
                   connection.releaseSymbol(textSymbol);
