@@ -26,12 +26,6 @@ describe('connection problems', () => {
 
 describe('connection', () => {
 
-  it('query', () =>
-    cp.then(connection =>
-      connection.query(false, api.queryMask.MMV, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
-    )
-  );
-
   describe('upload', () => {
     describe('without package', () => {
       it('syntax error', () =>
@@ -53,42 +47,62 @@ describe('connection', () => {
       );
     });
 
-    it('query', () =>
-      cp.then(connection =>
-        connection.upload('(Entity; Attribute Value;)').then(() =>
-          connection.upload('Entity').then(result =>
-            connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
-              data, {
-                Attribute: 'Value',
-                BlobType: 'UTF8'
-              }))
-          )
-        ))
-    );
+    describe('query', () => {
+      it('simple', () =>
+        cp.then(connection =>
+          connection.query(false, api.queryMask.MMV, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
+        )
+      );
 
-    it('query', () =>
-      cp.then(connection =>
-        connection.upload('(Entity; Attribute "Other Value";)').then(() =>
-          connection.upload('Entity').then(result =>
-            connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
-              data, {
-                Attribute: 'Other Value',
-                BlobType: 'UTF8'
-              }))
-          )
-        ))
-    );
+      it('known value', () =>
+        cp.then(connection =>
+          connection.upload('(Entity; Attribute Value;)').then(() =>
+            connection.upload('Entity').then(result =>
+              connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
+                data, {
+                  Attribute: 'Value',
+                  BlobType: 'UTF8'
+                }))
+            )
+          ))
+      );
 
-    it('query raw', () =>
-      cp.then(connection =>
-        connection.upload('(Entity; Attribute Value;)').then(() =>
-          connection.upload('Entity').then(result =>
-            connection.query(false, api.queryMask.MVV, result[0], 2, 0).then(data => assert.deepEqual(
-              data, [13, 14, 13, 709, 28, 32]))
-          )
-        ))
-    );
+      it('unknown value', () =>
+        cp.then(connection =>
+          connection.upload('(Entity; Attribute "Other Value";)').then(() =>
+            connection.upload('Entity').then(result =>
+              connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
+                data, {
+                  Attribute: 'Other Value',
+                  BlobType: 'UTF8'
+                }))
+            )
+          ))
+      );
 
+      xit('unknwon attribute', () =>
+        cp.then(connection =>
+          connection.upload('(Entity; someOtherAttribute "Other Value";)').then(() =>
+            connection.upload('Entity').then(result =>
+              connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
+                data, {
+                  someOtherAttribute: 'Other Value',
+                  BlobType: 'UTF8'
+                }))
+            )
+          ))
+      );
+
+      it('raw', () =>
+        cp.then(connection =>
+          connection.upload('(Entity; Attribute Value;)').then(() =>
+            connection.upload('Entity').then(result =>
+              connection.query(false, api.queryMask.MVV, result[0], 2, 0).then(data => assert.deepEqual(
+                data, [13, 14, 13, 848, 28, 32 /*, 921, 848*/ ]))
+            )
+          ))
+      );
+    });
   });
 
   before('start SymatemAPI', done => {
@@ -103,7 +117,7 @@ describe('connection', () => {
       setTimeout(() => {
         cp = api.open();
         done();
-      }, 200);
+      }, 600);
     });
   });
 

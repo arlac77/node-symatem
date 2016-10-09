@@ -94,7 +94,11 @@ exports.open = function (host = '::1', port = 1337) {
         if (name !== undefined) {
           return name;
         }
-        return undefined;
+
+        return connection.query(false, queryMask.MVV, symbol, 0, 0).then(result => {
+          console.log(`${symbol} -> ${JSON.stringify(result)}`);
+          return `name_of_symbol${symbol}`;
+        });
       },
 
       decodeSymbol: (s) => {
@@ -111,34 +115,37 @@ exports.open = function (host = '::1', port = 1337) {
 
           return Promise.all(valuesAndTypes).then(valuesAndTypes => {
             const object = {};
+            const promises = [];
 
             for (let i = 0; i < valuesAndTypes.length; i += 2) {
               let v = valuesAndTypes[i];
-              const type = valuesAndTypes[i + 1];
-
-              //console.log(`${avs[i]} ${v} (${type})`);
+              const type = valuesAndTypes[i + 1][0];
 
               if (type == PredefinedSymbols.UTF8) {
                 v = v.toString();
               } else if (type == PredefinedSymbols.Natural) {
-                v = v.readInt32LE(0);
+                v = v.readUInt32LE(0);
               } else if (type == PredefinedSymbols.Integer) {
                 v = v.readInt32LE(0);
-              } else if (type.length === 0) {
+              } else if (type === undefined) {
                 v = v.toString();
               } else {
                 console.log(
-                  `unknown type '${type}' ${typeof type} ${JSON.stringify(type)} ${type.length}`);
+                  `unknown type '${type}' ${typeof type} ${JSON.stringify(type)}`);
               }
 
+              //console.log(`${avs[i]} ${v} (${type})`);
+
               let propertyName = connection.symbolToName(avs[i]);
-              if (propertyName === undefined) {
-                //console.log(`${avs[i]} ${type}`);
-                propertyName = `symbol_${avs[i]}`;
+              if (propertyName.then) {
+                promises.push(propertyName.then(name => {
+                  object[name] = v;
+                }));
+              } else {
+                object[propertyName] = v;
               }
-              object[propertyName] = v;
             }
-            return object;
+            return Promise.all(promises).then(() => object);
           });
         });
       },
