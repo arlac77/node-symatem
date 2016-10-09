@@ -124,8 +124,11 @@ exports.open = function (host = '::1', port = 1337) {
                 v = v.readInt32LE(0);
               } else if (type == PredefinedSymbols.Integer) {
                 v = v.readInt32LE(0);
+              } else if (type.length === 0) {
+                v = v.toString();
               } else {
-                console.log(`unknown type ${type} ${typeof type}`);
+                console.log(
+                  `unknown type '${type}' ${typeof type} ${JSON.stringify(type)} ${type.length}`);
               }
 
               let propertyName = connection.symbolToName(avs[i]);

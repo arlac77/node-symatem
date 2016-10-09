@@ -66,12 +66,25 @@ describe('connection', () => {
         ))
     );
 
+    it('query', () =>
+      cp.then(connection =>
+        connection.upload('(Entity; Attribute "Other Value";)').then(() =>
+          connection.upload('Entity').then(result =>
+            connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
+              data, {
+                Attribute: 'Other Value',
+                BlobType: 'UTF8'
+              }))
+          )
+        ))
+    );
+
     it('query raw', () =>
       cp.then(connection =>
         connection.upload('(Entity; Attribute Value;)').then(() =>
           connection.upload('Entity').then(result =>
             connection.query(false, api.queryMask.MVV, result[0], 2, 0).then(data => assert.deepEqual(
-              data, [13, 14, 28, 32]))
+              data, [13, 14, 13, 709, 28, 32]))
           )
         ))
     );
@@ -90,7 +103,7 @@ describe('connection', () => {
       setTimeout(() => {
         cp = api.open();
         done();
-      }, 300);
+      }, 200);
     });
   });
 
