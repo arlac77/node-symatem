@@ -80,7 +80,7 @@ describe('connection', () => {
           ))
       );
 
-      xit('unknwon attribute', () =>
+      it('unknwon attribute', () =>
         cp.then(connection =>
           connection.upload('(Entity; someOtherAttribute "Other Value";)').then(() =>
             connection.upload('Entity').then(result =>
@@ -98,7 +98,7 @@ describe('connection', () => {
           connection.upload('(Entity; Attribute Value;)').then(() =>
             connection.upload('Entity').then(result =>
               connection.query(false, api.queryMask.MVV, result[0], 2, 0).then(data => assert.deepEqual(
-                data, [13, 14, 13, 848, 28, 32 /*, 921, 848*/ ]))
+                data, [13, 14, 13, 968, 28, 32, 1068, 968]))
             )
           ))
       );

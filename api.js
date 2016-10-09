@@ -95,10 +95,14 @@ exports.open = function (host = '::1', port = 1337) {
           return name;
         }
 
-        return connection.query(false, queryMask.MVV, symbol, 0, 0).then(result => {
-          console.log(`${symbol} -> ${JSON.stringify(result)}`);
-          return `name_of_symbol${symbol}`;
-        });
+        return connection.query(false, queryMask.MMV, symbol, PredefinedSymbols.BlobType, 0).then(result =>
+          connection.readBlob(symbol).then(result => {
+            const name = result.toString();
+            //console.log(`${symbol} -> ${name}`);
+            symbolToNameCache[symbol] = name;
+            return name;
+          })
+        );
       },
 
       decodeSymbol: (s) => {
@@ -121,22 +125,23 @@ exports.open = function (host = '::1', port = 1337) {
               let v = valuesAndTypes[i];
               const type = valuesAndTypes[i + 1][0];
 
-              if (type == PredefinedSymbols.UTF8) {
-                v = v.toString();
-              } else if (type == PredefinedSymbols.Natural) {
-                v = v.readUInt32LE(0);
-              } else if (type == PredefinedSymbols.Integer) {
-                v = v.readInt32LE(0);
-              } else if (type === undefined) {
-                v = v.toString();
-              } else {
-                console.log(
-                  `unknown type '${type}' ${typeof type} ${JSON.stringify(type)}`);
+              switch (type) {
+                case PredefinedSymbols.UTF8:
+                  v = v.toString();
+                  break;
+                case PredefinedSymbols.Natural:
+                  v = v.readUInt32LE(0);
+                  break;
+                case PredefinedSymbols.Integer:
+                  v = v.readInt32LE(0);
+                  break;
+                default:
+                  console.log(
+                    `unknown type '${type}' ${typeof type} ${JSON.stringify(type)}`);
               }
-
               //console.log(`${avs[i]} ${v} (${type})`);
 
-              let propertyName = connection.symbolToName(avs[i]);
+              const propertyName = connection.symbolToName(avs[i]);
               if (propertyName.then) {
                 promises.push(propertyName.then(name => {
                   object[name] = v;
