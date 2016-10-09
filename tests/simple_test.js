@@ -64,7 +64,7 @@ describe('connection', () => {
             }));
             */
           return connection.query(false, api.queryMask.MVV, result[0], 2, 0).then(data => assert.deepEqual(
-            data, [28, 32]));
+            data, [12, 13, 28, 32]));
         })
       ))
     );
