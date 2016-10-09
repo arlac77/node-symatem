@@ -86,6 +86,7 @@ describe('connection', () => {
             connection.upload('Entity').then(result =>
               connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
                 data, {
+                  Attribute: 'Other Value',
                   someOtherAttribute: 'Other Value',
                   BlobType: 'UTF8'
                 }))
