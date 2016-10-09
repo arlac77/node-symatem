@@ -11,27 +11,21 @@ api.open().then(connection =>
   connection.upload(fs.readFileSync('../de.mfelten.infrastructure/assets.sym'))
   .then(result => {
     return connection.upload('networkInterface').then(result => {
-      console.log(result);
-
       connection.query(false, api.queryMask.VMV, 0, result[0], 0).then(ipas => {
         //console.log(ipas);
+        Promise.all(ipas.map(symbol => connection.decodeSymbol(symbol))).then(
+          decoded => {
+            for (let i = 0; i < decoded.length; i += 2) {
+              const a = decoded[i + 0];
+              const b = decoded[i + 1];
+              delete a.BlobType;
+              delete b.BlobType;
 
-        connection.decodeSymbol(ipas[0]).then(o => console.log(o));
-        /*
-                const owners = [];
-                const interfaces = [];
-                for (let i = 0; i < ipas.length; i += 2) {
-                  owners.push(ipas[i]);
-                  interfaces.push(connection.decodeSymbol(ipas[i + 1]));
-                }
-
-                Promise.all(interfaces).then(all => {
-                  console.log(`interfaces: ${all.map(o => JSON.stringify(o))}`);
-                });
-                */
+              console.log(`${JSON.stringify(a)} <> ${JSON.stringify(b)}`);
+            }
+          }
+        );
       });
     });
-
-    //Promise.all(result.symbols.map(s => connection.decodeSymbol(s))).then(symbols => console.log(symbols));
   })
   .catch(result => console.error(result)));
