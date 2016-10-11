@@ -3,7 +3,10 @@
 'use strict';
 
 const net = require('net'),
-  msgpack = require('msgpack');
+  msgpack = require('msgpack'),
+  path = require('path'),
+  fs = require('fs'),
+  spawn = require('child_process').spawn;
 
 exports.queryMode = ['M', 'V', 'I'];
 
@@ -67,7 +70,11 @@ for (let i = 0; i < 27; ++i) {
   queryMask[key] = i;
 }
 
-exports.open = function (host = '::1', port = 1337) {
+exports.open = function ( /*host = '::1', port = 1337,*/ options = {}) {
+
+  const port = options.port || 1337;
+  const host = options.host || '::1';
+
   return new Promise((fullfill, reject) => {
     const socket = new net.Socket(),
       msgpackStream = new msgpack.Stream(socket),
@@ -143,9 +150,7 @@ exports.open = function (host = '::1', port = 1337) {
 
               const propertyName = connection.symbolToName(avs[i]);
               if (propertyName.then) {
-                promises.push(propertyName.then(name => {
-                  object[name] = v;
-                }));
+                promises.push(propertyName.then(name => object[name] = v));
               } else {
                 object[propertyName] = v;
               }
@@ -197,12 +202,33 @@ exports.open = function (host = '::1', port = 1337) {
       socket.destroy();
     });
 
-    socket.connect(port, host, error => {
-      if (error) {
-        reject(error);
-      } else {
-        fullfill(connection);
-      }
-    });
+    if (options.store === undefined) {
+      socket.connect(port, host, error => {
+        if (error) {
+          reject(error);
+        } else {
+          fullfill(connection);
+        }
+      });
+    } else {
+      const process = spawn(path.join(__dirname, 'SymatemAPI'), [options.store]);
+      process.stdout.on('data', data => console.log(`stdout: ${data}`));
+      process.stderr.on('data', data => console.error(`stderr: ${data}`));
+      process.on('error', err => console.error(`Failed to start child process. ${err}`));
+
+      connection.close = () => {
+        process.kill();
+        return Promise.resolve();
+      };
+
+      setTimeout(() =>
+        socket.connect(port, host, error => {
+          if (error) {
+            reject(error);
+          } else {
+            fullfill(connection);
+          }
+        }), 300);
+    }
   });
 };

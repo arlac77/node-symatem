@@ -19,7 +19,9 @@ let cp;
 
 describe('connection problems', () => {
   it('should fail', () =>
-    api.open('127.0.0.1', 12345)
+    api.open({
+      port: 12345
+    })
     .catch(e => assert.equal(e.code, 'ECONNREFUSED'))
   );
 });
@@ -109,31 +111,48 @@ describe('connection', () => {
   before('start SymatemAPI', done => {
     const store = path.join(__dirname, 'test.sdb');
     fs.unlink(store, error => {
-      symatem = spawn(path.join(__dirname, '..', 'SymatemAPI'), [store]);
-
-      symatem.stdout.on('data', data => console.log(`stdout: ${data}`));
-      symatem.stderr.on('data', data => console.log(`stderr: ${data}`));
-      symatem.on('error', err => console.log(`Failed to start child process. ${err}`));
-
-      setTimeout(() => {
-        cp = api.open();
-        done();
-      }, 600);
+      cp = api.open({
+        store: store
+      });
+      done();
     });
   });
 
   after('stop SymatemAPI', done => {
-    if (symatem) {
-      symatem.on('close', code => {
-        symatem = undefined;
-        console.log(`child process exited with code ${code}`);
-        //done();
-      });
-
-      symatem.kill();
+    cp.then(c => c.close()).then(() => {
       done();
-    } else {
-      done();
-    }
+    });
   });
+
+  /*
+    before('start SymatemAPI', done => {
+      const store = path.join(__dirname, 'test.sdb');
+      fs.unlink(store, error => {
+        symatem = spawn(path.join(__dirname, '..', 'SymatemAPI'), [store]);
+
+        symatem.stdout.on('data', data => console.log(`stdout: ${data}`));
+        symatem.stderr.on('data', data => console.log(`stderr: ${data}`));
+        symatem.on('error', err => console.log(`Failed to start child process. ${err}`));
+
+        setTimeout(() => {
+          cp = api.open();
+          done();
+        }, 600);
+      });
+    });
+
+    after('stop SymatemAPI', done => {
+      if (symatem) {
+        symatem.on('close', code => {
+          symatem = undefined;
+          console.log(`child process exited with code ${code}`);
+        });
+
+        symatem.kill();
+        done();
+      } else {
+        done();
+      }
+    });
+    */
 });
