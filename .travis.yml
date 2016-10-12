@@ -24,9 +24,9 @@ before_install:
   - npm i -g npm@latest
 before_script:
   - npm prune
-  - curl -O http://mfelten.de/Symatem/Symatem_$(uname -s)_$(uname -p).tar
-  - tar xvf Symatem_$(uname -s)_$(uname -p).tar SymatemAPI
-  - rm Symatem_$(uname -s)_$(uname -p).tar
+  - curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.tar
+  - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.tar SymatemAPI
+  - rm Symatem-$(uname -m)-$(uname -s)-macho.tar
   - chmod +x SymatemAPI
 script:
   - npm run cover
