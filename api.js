@@ -82,6 +82,9 @@ exports.open = function ( /*host = '::1', port = 1337,*/ options = {}) {
 
     const symbolToNameCache = {};
 
+    const symbolCache = {};
+    const ongoingSymbolCachePromise = {};
+
     const connection = {
       request: (...args) => {
         const packet = msgpack.pack(args);
@@ -110,6 +113,26 @@ exports.open = function ( /*host = '::1', port = 1337,*/ options = {}) {
             return name;
           })
         );
+      },
+
+      decodeSymbolWithCache: (symbol) => {
+        if (symbolCache[symbol]) {
+          //console.log(`already found: ${symbol}`);
+          return Promise.resolve(symbolCache[symbol]);
+        }
+        if (ongoingSymbolCachePromise[symbol]) {
+          //console.log(`already requested: ${symbol}`);
+          return ongoingSymbolCachePromise;
+        }
+
+        const p = connection.decodeSymbol(symbol).then(decoded => {
+          //console.log(`add ${symbol} -> ${decoded.name}`);
+          symbolCache[symbol] = decoded;
+          delete ongoingSymbolCachePromise[symbol];
+          return decoded;
+        });
+        ongoingSymbolCachePromise[symbol] = p;
+        return p;
       },
 
       decodeSymbol: (s) => {
