@@ -135,8 +135,8 @@ exports.open = function ( /*host = '::1', port = 1337,*/ options = {}) {
         return p;
       },
 
-      decodeSymbol: (s) => {
-        return connection.query(false, queryMask.MVV, s, 0, 0).then(avs => {
+      decodeSymbol: (symbol) => {
+        return connection.query(false, queryMask.MVV, symbol, 0, 0).then(avs => {
           const valuesAndTypes = [];
 
           //console.log(`avs: ${avs}`);

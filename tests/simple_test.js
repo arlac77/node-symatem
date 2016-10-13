@@ -56,52 +56,82 @@ describe('connection', () => {
         )
       );
 
-      it('known value', () =>
-        cp.then(connection =>
-          connection.upload('(Entity; Attribute Value;)').then(() =>
-            connection.upload('Entity').then(result =>
-              connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
-                data, {
-                  Attribute: 'Value',
-                  BlobType: 'UTF8'
-                }))
-            )
-          ))
-      );
+      describe('decode with cache', () => {
+        it('known value', () =>
+          cp.then(connection =>
+            connection.upload('(Entity; Attribute Value;)').then(() =>
+              connection.upload('Entity').then(result =>
+                connection.decodeSymbolWithCache(result[0]).then(data => assert.deepEqual(
+                  data, {
+                    Attribute: 'Value',
+                    BlobType: 'UTF8'
+                  }))
+              )
+            ))
+        );
 
-      it('unknown value', () =>
-        cp.then(connection =>
-          connection.upload('(Entity; Attribute "Other Value";)').then(() =>
-            connection.upload('Entity').then(result =>
-              connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
-                data, {
-                  Attribute: 'Other Value',
-                  BlobType: 'UTF8'
-                }))
-            )
-          ))
-      );
+        it('known value again', () =>
+          cp.then(connection =>
+            connection.upload('(Entity; Attribute Value;)').then(() =>
+              connection.upload('Entity').then(result =>
+                connection.decodeSymbolWithCache(result[0]).then(data => assert.deepEqual(
+                  data, {
+                    Attribute: 'Value',
+                    BlobType: 'UTF8'
+                  }))
+              )
+            ))
+        );
+      });
 
-      it('unknwon attribute', () =>
-        cp.then(connection =>
-          connection.upload('(Entity; someOtherAttribute "Other Value";)').then(() =>
-            connection.upload('Entity').then(result =>
-              connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
-                data, {
-                  Attribute: 'Other Value',
-                  someOtherAttribute: 'Other Value',
-                  BlobType: 'UTF8'
-                }))
-            )
-          ))
-      );
+      describe('decode', () => {
+        it('known value', () =>
+          cp.then(connection =>
+            connection.upload('(Entity; Attribute Value;)').then(() =>
+              connection.upload('Entity').then(result =>
+                connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
+                  data, {
+                    Attribute: 'Value',
+                    BlobType: 'UTF8'
+                  }))
+              )
+            ))
+        );
+
+        it('unknown value', () =>
+          cp.then(connection =>
+            connection.upload('(Entity; Attribute "Other Value";)').then(() =>
+              connection.upload('Entity').then(result =>
+                connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
+                  data, {
+                    Attribute: 'Other Value',
+                    BlobType: 'UTF8'
+                  }))
+              )
+            ))
+        );
+
+        it('unknwon attribute', () =>
+          cp.then(connection =>
+            connection.upload('(Entity; someOtherAttribute "Other Value";)').then(() =>
+              connection.upload('Entity').then(result =>
+                connection.decodeSymbol(result[0]).then(data => assert.deepEqual(
+                  data, {
+                    Attribute: 'Other Value',
+                    someOtherAttribute: 'Other Value',
+                    BlobType: 'UTF8'
+                  }))
+              )
+            ))
+        );
+      });
 
       it('raw', () =>
         cp.then(connection =>
           connection.upload('(Entity; Attribute Value;)').then(() =>
             connection.upload('Entity').then(result =>
               connection.query(false, api.queryMask.MVV, result[0], 2, 0).then(data => assert.deepEqual(
-                data, [13, 14, 13, 968, 28, 32, 1068, 968]))
+                data, [13, 14, 28, 32]))
             )
           ))
       );
