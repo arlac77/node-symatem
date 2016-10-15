@@ -165,7 +165,7 @@ exports.open = function (options = {}) {
                   break;
                 default:
                   console.log(
-                    `unknown type '${type}' ${typeof type} ${JSON.stringify(type)}`);
+                    `unknown type '${type}' ${typeof type} ${JSON.stringify(type)} for ${v}`);
               }
               //console.log(`${avs[i]} ${v} (${type})`);
 
