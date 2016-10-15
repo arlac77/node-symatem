@@ -70,7 +70,7 @@ for (let i = 0; i < 27; ++i) {
   queryMask[key] = i;
 }
 
-exports.open = function ( /*host = '::1', port = 1337,*/ options = {}) {
+exports.open = function (options = {}) {
 
   const port = options.port || 1337;
   const host = options.host || '::1';
@@ -82,8 +82,7 @@ exports.open = function ( /*host = '::1', port = 1337,*/ options = {}) {
 
     const symbolToNameCache = {};
 
-    const symbolCache = {};
-    const ongoingSymbolCachePromise = {};
+    const symbolCache = new Map();
 
     const connection = {
       request: (...args) => {
@@ -116,22 +115,21 @@ exports.open = function ( /*host = '::1', port = 1337,*/ options = {}) {
       },
 
       decodeSymbolWithCache: (symbol) => {
-        if (symbolCache[symbol]) {
+        const d = symbolCache.get(symbol); 
+        if (d !== undefined) {
           //console.log(`already found: ${symbol}`);
-          return Promise.resolve(symbolCache[symbol]);
-        }
-        if (ongoingSymbolCachePromise[symbol]) {
-          //console.log(`already requested: ${symbol}`);
-          return ongoingSymbolCachePromise;
+          d.access += 1;
+          return Promise.resolve(d.object);
         }
 
         const p = connection.decodeSymbol(symbol).then(decoded => {
           //console.log(`add ${symbol} -> ${decoded.name}`);
-          symbolCache[symbol] = decoded;
-          delete ongoingSymbolCachePromise[symbol];
+          symbolCache.set(symbol, { access: symbolCache.get(symbol).access, object: decoded });
           return decoded;
         });
-        ongoingSymbolCachePromise[symbol] = p;
+        
+        symbolCache.set(symbol, { access: 0, object: p });
+
         return p;
       },
 
