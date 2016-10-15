@@ -115,7 +115,7 @@ exports.open = function (options = {}) {
       },
 
       decodeSymbolWithCache: (symbol) => {
-        const d = symbolCache.get(symbol); 
+        const d = symbolCache.get(symbol);
         if (d !== undefined) {
           //console.log(`already found: ${symbol}`);
           d.access += 1;
@@ -124,11 +124,17 @@ exports.open = function (options = {}) {
 
         const p = connection.decodeSymbol(symbol).then(decoded => {
           //console.log(`add ${symbol} -> ${decoded.name}`);
-          symbolCache.set(symbol, { access: symbolCache.get(symbol).access, object: decoded });
+          symbolCache.set(symbol, {
+            access: symbolCache.get(symbol).access,
+            object: decoded
+          });
           return decoded;
         });
-        
-        symbolCache.set(symbol, { access: 0, object: p });
+
+        symbolCache.set(symbol, {
+          access: 0,
+          object: p
+        });
 
         return p;
       },
@@ -165,7 +171,8 @@ exports.open = function (options = {}) {
                   break;
                 default:
                   console.log(
-                    `unknown type '${type}' ${typeof type} ${JSON.stringify(type)} for ${v}`);
+                    `unknown type '${type}' ${typeof type} ${JSON.stringify(type)} for ${v} : ${avs[i]}`
+                  );
               }
               //console.log(`${avs[i]} ${v} (${type})`);
 
