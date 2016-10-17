@@ -13,9 +13,7 @@ const path = require('path'),
   spawn = require('child_process').spawn,
   api = require('../api');
 
-let symatem;
 let cp;
-
 
 describe('connection problems', () => {
   it('should fail', () =>
@@ -149,40 +147,6 @@ describe('connection', () => {
   });
 
   after('stop SymatemAPI', done => {
-    cp.then(c => c.close()).then(() => {
-      done();
-    });
+    cp.then(c => c.close()).then(() => done());
   });
-
-  /*
-    before('start SymatemAPI', done => {
-      const store = path.join(__dirname, 'test.sdb');
-      fs.unlink(store, error => {
-        symatem = spawn(path.join(__dirname, '..', 'SymatemAPI'), [store]);
-
-        symatem.stdout.on('data', data => console.log(`stdout: ${data}`));
-        symatem.stderr.on('data', data => console.log(`stderr: ${data}`));
-        symatem.on('error', err => console.log(`Failed to start child process. ${err}`));
-
-        setTimeout(() => {
-          cp = api.open();
-          done();
-        }, 600);
-      });
-    });
-
-    after('stop SymatemAPI', done => {
-      if (symatem) {
-        symatem.on('close', code => {
-          symatem = undefined;
-          console.log(`child process exited with code ${code}`);
-        });
-
-        symatem.kill();
-        done();
-      } else {
-        done();
-      }
-    });
-    */
 });
