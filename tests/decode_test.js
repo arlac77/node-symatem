@@ -48,6 +48,7 @@ describe('decode', () => {
     const store = path.join(__dirname, 'test2.sdb');
     fs.unlink(store, error => {
       cp = symatem.open({
+        port: 1235,
         store: store
       });
       done();
