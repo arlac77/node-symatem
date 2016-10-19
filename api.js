@@ -157,6 +157,7 @@ exports.open = function (options = {}) {
 
             for (let i = 0; i < valuesAndTypes.length; i += 2) {
               let v = valuesAndTypes[i];
+
               const type = valuesAndTypes[i + 1][0];
 
               switch (type) {
@@ -170,17 +171,23 @@ exports.open = function (options = {}) {
                   v = v.readInt32LE(0);
                   break;
                 default:
-                  console.log(
-                    `unknown type '${type}' ${typeof type} ${JSON.stringify(type)} for ${v} : ${avs[i]}`
-                  );
+                  if (v.length === 0) {
+                    v = undefined;
+                  } else {
+                    console.log(
+                      `unknown type '${type}' ${typeof type} ${JSON.stringify(type)} for ${v} : ${avs[i]}`
+                    );
+                  }
               }
               //console.log(`${avs[i]} ${v} (${type})`);
 
-              const propertyName = connection.symbolToName(avs[i]);
-              if (propertyName.then) {
-                promises.push(propertyName.then(name => object[name] = v));
-              } else {
-                object[propertyName] = v;
+              if (v !== undefined) {
+                const propertyName = connection.symbolToName(avs[i]);
+                if (propertyName.then) {
+                  promises.push(propertyName.then(name => object[name] = v));
+                } else {
+                  object[propertyName] = v;
+                }
               }
             }
             return Promise.all(promises).then(() => object);
@@ -239,7 +246,7 @@ exports.open = function (options = {}) {
         }
       });
     } else {
-      const process = spawn(path.join(__dirname, 'SymatemAPI'), ['--port',port,options.store]);
+      const process = spawn(path.join(__dirname, 'SymatemAPI'), ['--port', port, options.store]);
       process.stdout.on('data', data => console.log(`stdout: ${data}`));
       process.stderr.on('data', data => console.error(`stderr: ${data}`));
       process.on('error', err => console.error(`Failed to start child process. ${err}`));
