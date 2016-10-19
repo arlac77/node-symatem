@@ -34,12 +34,21 @@ const hrl =
 
 describe('decode', () => {
   it('object present', () =>
-    cp.then(connection => connection.upload('networkInterface')
+    cp.then(connection => connection.upload(hrl)
+      .then(() => connection.upload('networkInterface'))
       .then(result => connection.query(false, symatem.queryMask.VMV, 0, result[0], 0)
         .then(symbols => symbols.map(symbol => connection.decodeSymbolWithCache(symbol)))
         .then(dps => Promise.all(dps))
         .then(dps => assert.deepEqual(dps, [{
-          a: 1
+          name: "device1"
+        }, {
+          ipv4Address: "10.0.0.1",
+          macAddress: "72:41:0A:A9:58:01"
+        }, {
+          name: "device2"
+        }, {
+          ipv4Address: "10.0.0.2",
+          macAddress: "72:41:0A:A9:58:02"
         }]))
       )
     ));
