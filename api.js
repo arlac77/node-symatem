@@ -246,10 +246,11 @@ exports.open = function (options = {}) {
         }
       });
     } else {
-      const process = spawn(path.join(__dirname, 'SymatemAPI'), ['--port', port, options.store]);
+      const executable = path.join(__dirname, 'SymatemAPI');
+      const process = spawn(executable, ['--port', port, options.store]);
       process.stdout.on('data', data => console.log(`stdout: ${data}`));
       process.stderr.on('data', data => console.error(`stderr: ${data}`));
-      process.on('error', err => console.error(`Failed to start child process. ${err}`));
+      process.on('error', err => reject(`Failed to start ${executable}: ${err}`));
 
       connection.close = () => {
         process.kill();
