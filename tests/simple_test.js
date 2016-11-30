@@ -11,7 +11,7 @@ const chai = require('chai'),
 const path = require('path'),
   fs = require('fs'),
   spawn = require('child_process').spawn,
-  api = require('../api');
+  api = require('../src/api');
 
 let cp;
 

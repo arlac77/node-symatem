@@ -246,9 +246,21 @@ exports.open = function (options = {}) {
         }
       });
     } else {
-      const executable = path.join(__dirname, 'SymatemAPI');
-      const process = spawn(executable, ['--port', port, options.store]);
-      process.stdout.on('data', data => console.log(`stdout: ${data}`));
+      const executable = path.join(__dirname, '..', 'SymatemAPI');
+      const process = spawn(executable, ['--port', port, '--file', options.store]);
+      process.stdout.on('data', data => {
+        console.log(`stdout: ${data}`);
+        if (data.match(/Listen/)) {
+          socket.connect(port, host, error => {
+            if (error) {
+              reject(error);
+            } else {
+              fullfill(connection);
+            }
+          });
+        }
+      });
+
       process.stderr.on('data', data => console.error(`stderr: ${data}`));
       process.on('error', err => reject(`Failed to start ${executable}: ${err}`));
 
@@ -257,14 +269,16 @@ exports.open = function (options = {}) {
         return Promise.resolve();
       };
 
-      setTimeout(() =>
-        socket.connect(port, host, error => {
-          if (error) {
-            reject(error);
-          } else {
-            fullfill(connection);
-          }
-        }), 300);
+      /*
+            setTimeout(() =>
+              socket.connect(port, host, error => {
+                if (error) {
+                  reject(error);
+                } else {
+                  fullfill(connection);
+                }
+              }), 300);
+              */
     }
   });
 };
