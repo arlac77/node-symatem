@@ -7,9 +7,9 @@ sudo: false
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-    - g++-4.8
+      - g++-4.8
 branches:
   only:
     - master
@@ -24,12 +24,15 @@ before_install:
   - npm i -g npm@latest
 before_script:
   - npm prune
-  - curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.tar
+  - npm install -g codecov
+  - 'curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.tar'
   - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.tar SymatemAPI
   - rm Symatem-$(uname -m)-$(uname -s)-macho.tar
 script:
   - npm run cover
 after_script:
+  - codecov
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+  - npm run docs
 after_success:
   - npm run semantic-release
