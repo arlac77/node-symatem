@@ -6,5 +6,5 @@ import commonjs from 'rollup-plugin-commonjs';
 
 export default {
   format: 'cjs',
-  plugins: [nodeResolve(), commonjs()]
+  plugins: [ /*nodeResolve(),*/ commonjs()]
 };

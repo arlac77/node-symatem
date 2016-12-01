@@ -8,7 +8,7 @@ const net = require('net'),
   fs = require('fs'),
   spawn = require('child_process').spawn;
 
-exports.queryMode = ['M', 'V', 'I'];
+const queryMode = ['M', 'V', 'I'];
 
 const PredefinedSymbolLookup = [
   'Void', 'RunTimeEnvironment', 'ArchitectureSize',
@@ -27,8 +27,6 @@ const PredefinedSymbols = {};
 PredefinedSymbolLookup.forEach((s, i) => {
   PredefinedSymbols[s] = i;
 });
-
-exports.PredefinedSymbols = PredefinedSymbols;
 
 const queryMask = {
   /*
@@ -62,15 +60,13 @@ const queryMask = {
   */
 };
 
-exports.queryMask = queryMask;
-
 for (let i = 0; i < 27; ++i) {
-  const key = exports.queryMode[i % 3] + exports.queryMode[Math.floor(i / 3) % 3] + exports.queryMode[Math.floor(i / 9) %
+  const key = queryMode[i % 3] + queryMode[Math.floor(i / 3) % 3] + queryMode[Math.floor(i / 9) %
     3];
   queryMask[key] = i;
 }
 
-exports.open = function (options = {}) {
+function open(options = {}) {
 
   const port = options.port || 1337;
   const host = options.host || '::1';
@@ -281,4 +277,11 @@ exports.open = function (options = {}) {
               */
     }
   });
+}
+
+export {
+  queryMode,
+  queryMask,
+  PredefinedSymbols,
+  open
 };

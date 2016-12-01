@@ -1,10 +1,6 @@
 {
   "name": "symatem",
   "version": "0.0.0-semantic-release",
-  "authors": [
-    "Alexander Meißner",
-    "Markus Felten"
-  ],
   "license": "MIT",
   "description": "Symatem API",
   "module": "src/api.js",
@@ -37,8 +33,7 @@
     "jsdoc-to-markdown": "^2.0.1",
     "markdown-doctest": "^0.9.1",
     "rollup": "^0.36.4",
-    "rollup-plugin-commonjs": "^5.0.5",
-    "rollup-plugin-node-resolve": "^2.0.0"
+    "rollup-plugin-commonjs": "^5.0.5"
   },
   "engines": {
     "node": ">=6.9.1"
@@ -47,6 +42,8 @@
   "contributors": [{
     "name": "Markus Felten",
     "email": "markus.felten@gmx.de"
+  }, {
+    "name": "Alexander Meißner"
   }],
   "config": {
     "commitizen": {
