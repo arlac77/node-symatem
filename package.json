@@ -33,7 +33,7 @@
     "jsdoc-to-markdown": "^2.0.1",
     "markdown-doctest": "^0.9.1",
     "rollup": "^0.37.0",
-    "rollup-plugin-commonjs": "^5.0.5"
+    "rollup-plugin-commonjs": "^6.0.0"
   },
   "engines": {
     "node": ">=6.9.1"
