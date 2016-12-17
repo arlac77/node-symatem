@@ -11,7 +11,7 @@ const chai = require('chai'),
 const path = require('path'),
   fs = require('fs'),
   spawn = require('child_process').spawn,
-  symatem = require('../src/api');
+  symatem = require('../dist/api');
 
 let cp;
 
