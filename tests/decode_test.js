@@ -64,5 +64,5 @@ describe('decode', () => {
     });
   });
 
-  after('stop SymatemMP', done => cp.then(c => c.close()).then(() => done()));
+  after('stop SymatemMP', () => cp.then(c => c.close()));
 });

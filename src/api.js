@@ -6,21 +6,15 @@ const net = require('net'),
   msgpack = require('msgpack'),
   path = require('path'),
   fs = require('fs'),
-  spawn = require('child_process').spawn;
+  child_process = require('child_process');
 
 const queryMode = ['M', 'V', 'I'];
 
 const PredefinedSymbolLookup = [
   'Void', 'RunTimeEnvironment', 'ArchitectureSize',
-  'Package', 'Holds', 'Input', 'Output', 'Target',
-  'Destination', 'Source', 'Count', 'Direction',
-  'Entity', 'Attribute', 'Value', 'Search', 'Varying',
-  'Link', 'Unlink', 'Create', 'Destroy', 'Serialize',
-  'Deserialize', 'UnnestEntity', 'UnnestAttribute',
+  'Package', 'Holds', 'Entity', 'Attribute', 'Value', 'UnnestEntity', 'UnnestAttribute',
   'Message', 'Row', 'Column', 'BlobType', 'Natural',
-  'Integer', 'Float', 'UTF8', 'CloneBlob', 'SliceBlob',
-  'GetBlobSize', 'DecreaseBlobSize', 'IncreaseBlobSize',
-  'At'
+  'Integer', 'Float', 'UTF8'
 ];
 
 const PredefinedSymbols = {};
@@ -242,38 +236,43 @@ function open(options = {}) {
       });
     } else {
       const executable = path.join(__dirname, '..', 'SymatemMP');
-      const process = spawn(executable, ['--port', port, '--file', options.store]);
-      process.stdout.on('data', data => {
-        console.log(`stdout: ${data}`);
-        if (data.match(/Listen/)) {
-          socket.connect(port, host, error => {
-            if (error) {
-              reject(error);
-            } else {
-              fullfill(connection);
-            }
-          });
-        }
+      const symatem = child_process.spawn(executable, ['--port', port, '--file', options.store], {
+        shell: false,
+        detached: false,
+        stdio: ['ignore', 'pipe', process.stderr]
       });
 
-      process.stderr.on('data', data => console.error(`stderr: ${data}`));
-      process.on('error', err => reject(`Failed to start ${executable}: ${err}`));
+      /*
+            symatem.stdout.on('data', data => {
+              console.log(`stdout: ${data}`);
+              if (data.match(/Listening/)) {
+                socket.connect(port, host, error => {
+                  if (error) {
+                    reject(error);
+                  } else {
+                    fullfill(connection);
+                  }
+                });
+              }
+            });
+      */
+
+      //process.stderr.on('data', data => console.error(data));
+      symatem.on('error', err => reject(`Failed to start ${executable}: ${err}`));
 
       connection.close = () => {
-        process.kill();
+        symatem.kill();
         return Promise.resolve();
       };
 
-      /*
-            setTimeout(() =>
-              socket.connect(port, host, error => {
-                if (error) {
-                  reject(error);
-                } else {
-                  fullfill(connection);
-                }
-              }), 300);
-              */
+      setTimeout(() =>
+        socket.connect(port, host, error => {
+          if (error) {
+            reject(error);
+          } else {
+            fullfill(connection);
+          }
+        }), 200);
     }
   });
 }

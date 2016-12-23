@@ -42,7 +42,7 @@ describe('connection', () => {
         cp.then(connection =>
           connection.upload('(Entity; Attribute Value;)')
           .then(result => connection.query(false, api.queryMask.MVI, result[0], 0, 0))
-          .then(result => assert.deepEqual(result, [13, 28]))
+          .then(result => assert.deepEqual(result, [6, 13]))
         )
       );
     });
@@ -50,7 +50,7 @@ describe('connection', () => {
     describe('query', () => {
       it('simple', () =>
         cp.then(connection =>
-          connection.query(false, api.queryMask.MMV, 1, 2, 0).then(data => assert.deepEqual(data, [589]))
+          connection.query(false, api.queryMask.MMV, 1, 2, 0).then(data => assert.deepEqual(data, [274]))
         )
       );
 
@@ -129,7 +129,7 @@ describe('connection', () => {
           connection.upload('(Entity; Attribute Value;)').then(() =>
             connection.upload('Entity').then(result =>
               connection.query(false, api.queryMask.MVV, result[0], 2, 0).then(data => assert.deepEqual(
-                data, [13, 14, 28, 32]))
+                data, [6, 7, 13, 17]))
             )
           ))
       );
@@ -146,5 +146,5 @@ describe('connection', () => {
     });
   });
 
-  after('stop SymatemMP', done => cp.then(c => c.close()).then(() => done()));
+  after('stop SymatemMP', () => cp.then(c => c.close()));
 });
