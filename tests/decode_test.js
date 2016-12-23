@@ -53,7 +53,7 @@ describe('decode', () => {
       )
     ));
 
-  before('start SymatemAPI', done => {
+  before('start SymatemMP', done => {
     const store = path.join(__dirname, 'test2.sdb');
     fs.unlink(store, error => {
       cp = symatem.open({
@@ -64,7 +64,5 @@ describe('decode', () => {
     });
   });
 
-  after('stop SymatemAPI', done => {
-    cp.then(c => c.close()).then(() => done());
-  });
+  after('stop SymatemMP', done => cp.then(c => c.close()).then(() => done()));
 });
