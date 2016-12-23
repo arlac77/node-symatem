@@ -67,7 +67,6 @@ for (let i = 0; i < 27; ++i) {
 }
 
 function open(options = {}) {
-
   const port = options.port || 1337;
   const host = options.host || '::1';
 
@@ -242,7 +241,7 @@ function open(options = {}) {
         }
       });
     } else {
-      const executable = path.join(__dirname, '..', 'SymatemAPI');
+      const executable = path.join(__dirname, '..', 'SymatemMP');
       const process = spawn(executable, ['--port', port, '--file', options.store]);
       process.stdout.on('data', data => {
         console.log(`stdout: ${data}`);

@@ -26,7 +26,7 @@ before_script:
   - npm prune
   - npm install -g codecov
   - 'curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.tar'
-  - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.tar SymatemAPI
+  - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.tar SymatemMP
   - rm Symatem-$(uname -m)-$(uname -s)-macho.tar
 script:
   - npm run cover
