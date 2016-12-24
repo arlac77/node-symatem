@@ -28,22 +28,25 @@
     "mocha": "^3.2.0",
     "istanbul": "^0.4.5",
     "codecov": "^1.0.0",
-    "semantic-release": "^6.3.3",
+    "semantic-release": "^6.3.5",
     "cz-conventional-changelog": "^1.2.0",
     "jsdoc-to-markdown": "^2.0.1",
     "markdown-doctest": "^0.9.1",
     "rollup": "^0.38.0"
   },
   "engines": {
-    "node": ">=6.9.1"
+    "node": ">=6.9.2"
   },
   "keywords": [],
-  "contributors": [{
-    "name": "Markus Felten",
-    "email": "markus.felten@gmx.de"
-  }, {
-    "name": "Alexander Meißner"
-  }],
+  "contributors": [
+    {
+      "name": "Markus Felten",
+      "email": "markus.felten@gmx.de"
+    },
+    {
+      "name": "Alexander Meißner"
+    }
+  ],
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
