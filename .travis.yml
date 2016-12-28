@@ -4,12 +4,6 @@ os:
 node_js:
   - 6.9.2
 sudo: false
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
 branches:
   only:
     - master
@@ -25,9 +19,9 @@ before_install:
 before_script:
   - npm prune
   - npm install -g codecov
-  - 'curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.tar'
-  - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.tar SymatemMP
-  - rm Symatem-$(uname -m)-$(uname -s)-macho.tar
+  - 'curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.latest.tar'
+  - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.latest.tar SymatemMP
+  - rm Symatem-$(uname -m)-$(uname -s)-macho.latest.tar
 script:
   - npm run cover
 after_script:
