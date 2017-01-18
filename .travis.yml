@@ -2,7 +2,7 @@ language: node_js
 os:
   - osx
 node_js:
-  - 6.9.3
+  - 6.9.4
 sudo: false
 branches:
   only:
@@ -19,6 +19,7 @@ before_install:
 before_script:
   - npm prune
   - npm install -g codecov
+  - npm install coveralls
   - curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.latest.tar
   - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.latest.tar SymatemMP
   - rm Symatem-$(uname -m)-$(uname -s)-macho.latest.tar
