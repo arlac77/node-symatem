@@ -38,18 +38,15 @@
     "nyc": "^10.1.2"
   },
   "engines": {
-    "node": ">=6.9.4"
+    "node": ">=7.7.4"
   },
   "keywords": [],
-  "contributors": [
-    {
-      "name": "Markus Felten",
-      "email": "markus.felten@gmx.de"
-    },
-    {
-      "name": "Alexander Meißner"
-    }
-  ],
+  "contributors": [{
+    "name": "Markus Felten",
+    "email": "markus.felten@gmx.de"
+  }, {
+    "name": "Alexander Meißner"
+  }],
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
