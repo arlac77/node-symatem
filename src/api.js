@@ -10,17 +10,24 @@ const net = require('net'),
 
 const queryMode = ['M', 'V', 'I'];
 
-const PredefinedSymbolLookup = [
-  'Void', 'RunTimeEnvironment', 'ArchitectureSize',
-  'Package', 'Holds', 'Entity', 'Attribute', 'Value', 'UnnestEntity', 'UnnestAttribute',
-  'Message', 'Row', 'Column', 'BlobType', 'Natural',
-  'Integer', 'Float', 'UTF8'
-];
+const symbolByName = {
+  Void: 0,
+  PosX: 13,
+  PosY: 14,
+  BlobType: 15,
+  Natural: 16,
+  Integer: 17,
+  Float: 18,
+  UTF8: 19,
+  BinaryOntologyCodec: 22
+};
 
-const PredefinedSymbols = {};
-PredefinedSymbolLookup.forEach((s, i) => {
-  PredefinedSymbols[s] = i;
-});
+const symbolToName = ['Void', undefined, undefined, undefined, undefined,
+  undefined, undefined, undefined, undefined, undefined,
+  undefined, undefined, undefined, 'PosX', 'PosY',
+  'BlobType', 'Natural', 'Integer', 'Float', 'UTF8',
+  undefined, undefined, 'BinaryOntologyCodec'
+];
 
 const queryMask = {
   /*
@@ -88,12 +95,12 @@ function open(options = {}) {
       nameToSymbol: (name) => connection.deserializeBlob(`"${name}"`),
 
       symbolToName: (symbol) => {
-        let name = PredefinedSymbolLookup[symbol] || symbolToNameCache[symbol];
+        const name = symbolToName[symbol] || symbolToNameCache[symbol];
         if (name !== undefined) {
           return name;
         }
 
-        return connection.query(false, queryMask.MMV, symbol, PredefinedSymbols.BlobType, 0).then(result =>
+        return connection.query(false, queryMask.MMV, symbol, symbolByName.BlobType, 0).then(result =>
           connection.readBlob(symbol).then(result => {
             const name = result.toString();
             //console.log(`${symbol} -> ${name}`);
@@ -136,7 +143,7 @@ function open(options = {}) {
           for (let i = 0; i < avs.length; i += 2) {
             const value = avs[i + 1] + 0;
             valuesAndTypes.push(connection.readBlob(value));
-            valuesAndTypes.push(connection.query(false, queryMask.MMV, value, PredefinedSymbols.BlobType,
+            valuesAndTypes.push(connection.query(false, queryMask.MMV, value, symbolByName.BlobType,
               0));
           }
 
@@ -150,13 +157,13 @@ function open(options = {}) {
               const type = valuesAndTypes[i + 1][0];
 
               switch (type) {
-                case PredefinedSymbols.UTF8:
+                case symbolByName.UTF8:
                   v = v.toString();
                   break;
-                case PredefinedSymbols.Natural:
+                case symbolByName.Natural:
                   v = v.readUInt32LE(0);
                   break;
-                case PredefinedSymbols.Integer:
+                case symbolByName.Integer:
                   v = v.readInt32LE(0);
                   break;
                 default:
@@ -184,12 +191,12 @@ function open(options = {}) {
         });
       },
 
-      upload: (text, packageSymbol = PredefinedSymbols.Void) => {
+      upload: (text, packageSymbol = symbolByName.Void) => {
         const buffer = Buffer.from(text);
         return connection.createSymbol().then(textSymbol =>
           connection.setBlobSize(textSymbol, buffer.length * 8).then(() =>
             connection.writeBlob(textSymbol, 0, buffer.length * 8, buffer).then(() =>
-              connection.link(textSymbol, PredefinedSymbols.BlobType, PredefinedSymbols.UTF8).then(() =>
+              connection.link(textSymbol, symbolByName.BlobType, symbolByName.UTF8).then(() =>
                 connection.deserializeBlob(textSymbol, packageSymbol).then(data => {
                   connection.releaseSymbol(textSymbol);
                   return Array.isArray(data) ? data : connection.decodeSymbol(data).then(r =>
@@ -280,6 +287,6 @@ function open(options = {}) {
 export {
   queryMode,
   queryMask,
-  PredefinedSymbols,
+  symbolByName,
   open
 };
