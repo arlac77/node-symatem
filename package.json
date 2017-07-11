@@ -1,54 +1,49 @@
 {
-  "name": "symatem",
-  "version": "0.0.0-semantic-release",
-  "license": "MIT",
-  "description": "Symatem API",
-  "module": "src/api.js",
-  "main": "dist/api.js",
+  "name": "node-symatem",
   "scripts": {
+    "precover": "npm run prepublish",
     "cover": "nyc npm test",
-    "test": "mocha tests/*_test.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "docs": "jsdoc2md -l off -t doc/README.hbs -f src/*.js >README.md",
-    "prepublish": "rollup --output=dist/api.js -c -- src/api.js",
     "pretest": "npm run prepublish",
+    "test": "mocha tests/*_test.js",
     "posttest": "markdown-doctest",
-    "precover": "npm run prepublish"
-  },
-  "bugs": {
-    "url": "https://github.com/arlac77/node-symatem/issues"
-  },
-  "homepage": "https://github.com/arlac77/node-symatem.git#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/arlac77/node-symatem.git"
-  },
-  "dependencies": {
-    "msgpack": "^1.0.2"
+    "prepublish": "rollup --output=dist/index.js -c -- {{module}}",
+    "docs": "jsdoc2md -l off -t doc/README.hbs -f src/*.js >README.md",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "devDependencies": {
-    "chai": "^4.0.2",
-    "codecov": "^2.2.0",
     "jsdoc-to-markdown": "^3.0.0",
     "markdown-doctest": "^0.9.1",
+    "chai": "^4.0.2",
     "mocha": "^3.4.2",
+    "nyc": "^11.0.3",
     "rollup": "^0.45.1",
-    "semantic-release": "^6.3.6",
-    "nyc": "^11.0.3"
+    "semantic-release": "^6.3.6"
   },
   "engines": {
     "node": ">=8.1.3"
   },
-  "keywords": [],
+  "version": "0.0.0-semantic-release",
+  "description": "{{description}}",
+  "main": "dist/index.js",
+  "keywords": [
+    "npm-package-template"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arlac77/node-symatem.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arlac77/node-symatem/issues"
+  },
+  "homepage": "https://github.com/arlac77/node-symatem#readme",
+  "dependencies": {},
   "contributors": [
     {
       "name": "Markus Felten",
       "email": "markus.felten@gmx.de"
-    },
-    {
-      "name": "Alexander Meißner"
     }
   ],
+  "license": "BSD-2-Clause",
   "nyc": {
     "include": [
       "dist/**/*.js"
