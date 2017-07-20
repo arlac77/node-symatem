@@ -37,7 +37,7 @@
     "nyc": "^11.0.3"
   },
   "engines": {
-    "node": ">=8.1.4"
+    "node": ">=8.2.0"
   },
   "keywords": [],
   "contributors": [
