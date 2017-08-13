@@ -21,7 +21,7 @@
   "homepage": "https://github.com/arlac77/node-symatem.git#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/arlac77/node-symatem.git"
+    "url": "git+https://github.com/arlac77/node-symatem.git"
   },
   "dependencies": {
     "msgpack": "^1.0.2"
@@ -50,12 +50,8 @@
     }
   ],
   "nyc": {
-    "include": [
-      "dist/**/*.js"
-    ],
-    "reporter": [
-      "lcov"
-    ],
+    "include": ["dist/**/*.js"],
+    "reporter": ["lcov"],
     "report-dir": "./coverage"
   },
   "template": {
