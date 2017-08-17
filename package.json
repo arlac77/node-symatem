@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/arlac77/node-symatem/issues"
   },
-  "homepage": "https://github.com/arlac77/node-symatem.git#readme",
+  "homepage": "https://github.com/arlac77/symatem#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arlac77/node-symatem.git"
@@ -37,7 +37,7 @@
     "nyc": "^11.1.0"
   },
   "engines": {
-    "node": ">=8.3.0"
+    "node": ">=8.4.0"
   },
   "keywords": [],
   "contributors": [
