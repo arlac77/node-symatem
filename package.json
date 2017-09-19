@@ -10,10 +10,10 @@
     "test": "mocha tests/*-test.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "docs": "jsdoc2md -l off -t doc/README.hbs -f src/*.js >README.md",
-    "prepublish": "rollup --output=dist/api.js -c -- src/api.js",
-    "pretest": "npm run prepublish",
+    "pretest": "rollup -c",
     "posttest": "markdown-doctest",
-    "precover": "npm run prepublish"
+    "precover": "rollup -c",
+    "prepare": "rollup -c"
   },
   "bugs": {
     "url": "https://github.com/arlac77/node-symatem/issues"
@@ -32,12 +32,12 @@
     "jsdoc-to-markdown": "^3.0.0",
     "markdown-doctest": "^0.9.1",
     "mocha": "^3.5.3",
-    "rollup": "^0.47.6",
-    "semantic-release": "^8.0.0",
+    "rollup": "^0.50.0",
+    "semantic-release": "^8.0.1",
     "nyc": "^11.2.1"
   },
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=8.5.0"
   },
   "keywords": [],
   "contributors": [
@@ -50,13 +50,20 @@
     }
   ],
   "nyc": {
-    "include": ["dist/**/*.js"],
-    "reporter": ["lcov"],
+    "include": [
+      "dist/**/*.js"
+    ],
+    "reporter": [
+      "lcov"
+    ],
     "report-dir": "./coverage"
   },
   "template": {
     "repository": {
       "url": "https://github.com/Kronos-Tools/npm-package-template.git"
     }
+  },
+  "xo": {
+    "space": true
   }
 }
