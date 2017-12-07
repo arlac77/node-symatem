@@ -15,7 +15,7 @@ test('connection problems', async t => {
   }
 });
 
-test.only('connection upload', async t => {
+test('connection upload', async t => {
   try {
     const store = path.join(__dirname, 'test2.sdb');
 
