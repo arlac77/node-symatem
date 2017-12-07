@@ -155,7 +155,7 @@ export function open(options = {}) {
         return p;
       },
 
-      decodeSymbol: symbol => {
+      decodeSymbol: async symbol => {
         return connection
           .query(false, queryMask.MVV, symbol, 0, 0)
           .then(avs => {
@@ -224,29 +224,29 @@ export function open(options = {}) {
           });
       },
 
-      upload: (text, packageSymbol = symbolByName.Void) => {
+      upload: async (text, packageSymbol = symbolByName.Void) => {
         const buffer = Buffer.from(text);
-        return connection.createSymbol().then(textSymbol =>
-          connection.setBlobSize(textSymbol, buffer.length * 8).then(() =>
-            connection
-              .writeBlob(textSymbol, 0, buffer.length * 8, buffer)
-              .then(() =>
-                connection
-                  .link(textSymbol, symbolByName.BlobType, symbolByName.UTF8)
-                  .then(() =>
-                    connection
-                      .deserializeBlob(textSymbol, packageSymbol)
-                      .then(data => {
-                        connection.releaseSymbol(textSymbol);
-                        return Array.isArray(data)
-                          ? data
-                          : connection
-                              .decodeSymbol(data)
-                              .then(r => Promise.reject(r));
-                      })
-                  )
-              )
-          )
+        const textSymbol = await connection.createSymbol();
+
+        connection.setBlobSize(textSymbol, buffer.length * 8).then(() =>
+          connection
+            .writeBlob(textSymbol, 0, buffer.length * 8, buffer)
+            .then(() =>
+              connection
+                .link(textSymbol, symbolByName.BlobType, symbolByName.UTF8)
+                .then(() =>
+                  connection
+                    .deserializeBlob(textSymbol, packageSymbol)
+                    .then(data => {
+                      connection.releaseSymbol(textSymbol);
+                      return Array.isArray(data)
+                        ? data
+                        : connection
+                            .decodeSymbol(data)
+                            .then(r => Promise.reject(r));
+                    })
+                )
+            )
         );
       }
     };
