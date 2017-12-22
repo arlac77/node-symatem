@@ -18,9 +18,7 @@
 # symatem
 Symatem API
 
-# API Reference
-
-* * *
+# API
 
 # install
 
