@@ -25,6 +25,8 @@ before_script:
   - rm Symatem-$(uname -m)-$(uname -s)-macho.5eab774.tar
 script:
   - npm run cover
+  - npm run lint
+  - npm run docs
 after_script:
   - codecov
   - cat ./build/coverage/lcov.info | coveralls
