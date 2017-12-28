@@ -1,10 +1,20 @@
 {
   "name": "symatem",
   "version": "0.0.0-semantic-release",
-  "license": "MIT",
-  "description": "Symatem API",
-  "module": "src/api.js",
   "main": "dist/api.js",
+  "module": "src/api.js",
+  "description": "Symatem API",
+  "keywords": [],
+  "contributors": [
+    {
+      "name": "Markus Felten",
+      "email": "markus.felten@gmx.de"
+    },
+    {
+      "name": "Alexander Meißner"
+    }
+  ],
+  "license": "MIT",
   "scripts": {
     "cover": "nyc --temp-directory build/nyc ava",
     "test": "ava",
@@ -15,14 +25,6 @@
     "precover": "rollup -c tests/rollup.config.js",
     "prepare": "rollup -c",
     "lint": "documentation lint src/api.js"
-  },
-  "bugs": {
-    "url": "https://github.com/arlac77/node-symatem/issues"
-  },
-  "homepage": "https://github.com/arlac77/node-symatem#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/arlac77/node-symatem.git"
   },
   "dependencies": {
     "msgpack": "^1.0.2"
@@ -41,33 +43,14 @@
   "engines": {
     "node": ">=8.9.3"
   },
-  "keywords": [],
-  "contributors": [
-    {
-      "name": "Markus Felten",
-      "email": "markus.felten@gmx.de"
-    },
-    {
-      "name": "Alexander Meißner"
-    }
-  ],
-  "nyc": {
-    "include": [
-      "dist/**/*.js"
-    ],
-    "reporter": [
-      "lcov"
-    ],
-    "report-dir": "./coverage"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arlac77/node-symatem.git"
   },
-  "template": {
-    "repository": {
-      "url": "https://github.com/arlac77/npm-package-template.git"
-    }
+  "bugs": {
+    "url": "https://github.com/arlac77/node-symatem/issues"
   },
-  "xo": {
-    "space": true
-  },
+  "homepage": "https://github.com/arlac77/node-symatem#readme",
   "ava": {
     "files": [
       "build/*-test.js"
@@ -78,5 +61,22 @@
     "require": [
       "babel-register"
     ]
+  },
+  "nyc": {
+    "include": [
+      "dist/**/*.js"
+    ],
+    "reporter": [
+      "lcov"
+    ],
+    "report-dir": "./coverage"
+  },
+  "xo": {
+    "space": true
+  },
+  "template": {
+    "repository": {
+      "url": "https://github.com/arlac77/npm-package-template.git"
+    }
   }
 }
