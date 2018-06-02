@@ -1,6 +1,9 @@
 {
   "name": "symatem",
   "version": "0.0.0-semantic-release",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/api.js",
   "module": "src/api.js",
   "description": "Symatem API",
