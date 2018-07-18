@@ -36,7 +36,7 @@
   "devDependencies": {
     "codecov": "^3.0.4",
     "markdown-doctest": "^0.9.1",
-    "rollup": "^0.62.0",
+    "rollup": "^0.63.0",
     "semantic-release": "^15.8.0",
     "nyc": "^13.0.0",
     "ava": "^0.25.0",
