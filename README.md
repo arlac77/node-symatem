@@ -7,7 +7,6 @@
 [![Coverage Status](https://coveralls.io/repos/arlac77/node-symatem/badge.svg)](https://coveralls.io/r/arlac77/node-symatem)
 [![Known Vulnerabilities](https://snyk.io/test/github/arlac77/node-symatem/badge.svg)](https://snyk.io/test/github/arlac77/node-symatem)
 [![GitHub Issues](https://img.shields.io/github/issues/arlac77/node-symatem.svg?style=flat-square)](https://github.com/arlac77/node-symatem/issues)
-[![Stories in Ready](https://badge.waffle.io/arlac77/node-symatem.svg?label=ready&title=Ready)](http://waffle.io/arlac77/node-symatem)
 [![Dependency Status](https://david-dm.org/arlac77/node-symatem.svg)](https://david-dm.org/arlac77/node-symatem)
 [![devDependency Status](https://david-dm.org/arlac77/node-symatem/dev-status.svg)](https://david-dm.org/arlac77/node-symatem#info=devDependencies)
 [![docs](http://inch-ci.org/github/arlac77/node-symatem.svg?branch=master)](http://inch-ci.org/github/arlac77/node-symatem)
