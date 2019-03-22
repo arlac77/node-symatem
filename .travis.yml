@@ -8,7 +8,6 @@ branches:
     - master
     - /^greenkeeper/.*$/
 cache: npm
-notifications: {}
 before_script:
   - 'curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.5eab774.tar'
   - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.5eab774.tar SymatemMP
