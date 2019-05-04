@@ -1,29 +1,20 @@
 language: node_js
-os:
-  - osx
 node_js:
   - 10.15.3
-branches:
-  only:
-    - master
-    - /^greenkeeper/.*$/
+  - 12.1.0
 cache: npm
-before_script:
-  - 'curl -O http://mfelten.de/Symatem/Symatem-$(uname -m)-$(uname -s)-macho.5eab774.tar'
-  - tar xvf Symatem-$(uname -m)-$(uname -s)-macho.5eab774.tar SymatemMP
-  - rm Symatem-$(uname -m)-$(uname -s)-macho.5eab774.tar
-script:
-  - npm run cover
 jobs:
   include:
-    - stage: docs
-      node_js: lts/*
-      skip_cleanup: 'true'
+    - stage: test
+      skip_cleanup: "true"
       script:
-        - npm install -g --production coveralls codecov
         - npm run cover
-        - codecov
-        - cat ./coverage/lcov.info | coveralls
+        - npx codecov
+        - cat ./build/coverage/lcov.info | npx coveralls
+    - stage: doc
+      node_js: lts/*
+      skip_cleanup: "true"
+      script:
         - npm run lint
         - npm run docs
     - stage: release
@@ -31,6 +22,6 @@ jobs:
       script: skip
       deploy:
         provider: script
-        skip_cleanup: 'true'
+        skip_cleanup: "true"
         script:
           - npx semantic-release
