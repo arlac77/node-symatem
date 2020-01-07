@@ -1,7 +1,4 @@
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Build Status](https://secure.travis-ci.org/arlac77/node-symatem.png)](http://travis-ci.org/arlac77/node-symatem)
-[![codecov.io](http://codecov.io/github/arlac77/node-symatem/coverage.svg?branch=master)](http://codecov.io/github/arlac77/node-symatem?branch=master)
-[![Coverage Status](https://coveralls.io/repos/arlac77/node-symatem/badge.svg)](https://coveralls.io/r/arlac77/node-symatem)
 [![Known Vulnerabilities](https://snyk.io/test/github/arlac77/node-symatem/badge.svg)](https://snyk.io/test/github/arlac77/node-symatem)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![npm](https://img.shields.io/npm/v/symatem.svg)](https://www.npmjs.com/package/symatem)
@@ -11,6 +8,9 @@
 [![minified size](https://badgen.net/bundlephobia/min/symatem)](https://bundlephobia.com/result?p=symatem)
 [![downloads](http://img.shields.io/npm/dm/symatem.svg?style=flat-square)](https://npmjs.org/package/symatem)
 [![GitHub Issues](https://img.shields.io/github/issues/arlac77/node-symatem.svg?style=flat-square)](https://github.com/arlac77/node-symatem/issues)
+[![Build Status](https://secure.travis-ci.org/arlac77/node-symatem.png)](http://travis-ci.org/arlac77/node-symatem)
+[![codecov.io](http://codecov.io/github/arlac77/node-symatem/coverage.svg?branch=master)](http://codecov.io/github/arlac77/node-symatem?branch=master)
+[![Coverage Status](https://coveralls.io/repos/arlac77/node-symatem/badge.svg)](https://coveralls.io/r/arlac77/node-symatem)
 
 # symatem
 
