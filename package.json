@@ -37,8 +37,8 @@
     "builtin-modules": "^3.1.0",
     "c8": "^7.1.0",
     "codecov": "^3.6.4",
-    "documentation": "^12.2.0",
-    "rollup": "^2.3.3",
+    "documentation": "^12.3.0",
+    "rollup": "^2.3.4",
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-executable": "^1.5.3",
     "semantic-release": "^17.0.4"
