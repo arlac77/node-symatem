@@ -38,10 +38,10 @@
     "c8": "^7.1.0",
     "codecov": "^3.6.4",
     "documentation": "^12.3.0",
-    "rollup": "^2.6.1",
+    "rollup": "^2.7.1",
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-executable": "^1.5.3",
-    "semantic-release": "^17.0.6"
+    "semantic-release": "^17.0.7"
   },
   "engines": {
     "node": ">=12.16.2"
