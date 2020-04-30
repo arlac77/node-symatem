@@ -22,8 +22,8 @@
     "pretest": "rollup -c tests/rollup.config.js",
     "test": "ava --timeout 2m",
     "cover": "c8 -x 'tests/**/*' --temp-directory build/tmp ava --timeout 2m && c8 report -r lcov -o build/coverage --temp-directory build/tmp",
-    "docs": "documentation readme src/api.js --section=API",
-    "lint": "documentation lint src/api.js"
+    "docs": "documentation readme src/api.js --section=API && documentation readme dist/api.js --section=API",
+    "lint": "documentation lint src/api.js && documentation lint dist/api.js"
   },
   "dependencies": {
     "msgpack": "^1.0.2"
@@ -38,13 +38,13 @@
     "c8": "^7.1.0",
     "codecov": "^3.6.4",
     "documentation": "^12.3.0",
-    "rollup": "^2.7.3",
+    "rollup": "^2.7.5",
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-executable": "^1.5.3",
     "semantic-release": "^17.0.7"
   },
   "engines": {
-    "node": ">=12.16.2"
+    "node": ">=12.16.3"
   },
   "repository": {
     "type": "git",
