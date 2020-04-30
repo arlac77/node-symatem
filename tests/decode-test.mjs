@@ -1,5 +1,5 @@
 import test from 'ava';
-import { open, queryMask } from '../src/api';
+import { open, queryMask } from '../src/api.mjs';
 
 const path = require('path'),
   fs = require('fs'),
