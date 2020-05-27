@@ -8,8 +8,7 @@
   "type": "module",
   "main": "./src/api.mjs",
   "exports": {
-    ".": "./src/api.mjs",
-    "./": "./"
+    ".": "./src/api.mjs"
   },
   "description": "Symatem API",
   "contributors": [
